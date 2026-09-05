@@ -150,9 +150,16 @@
 
             <!-- Tabel Riwayat -->
             <div class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
-                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
-                </h2>
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
+                    </h2>
+                    <!-- Tombol untuk merapikan/menggabungkan data terpisah yang sudah ada -->
+                    <button onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
+                        <i class="fa-solid fa-compress"></i> Gabungkan Data Duplikat
+                    </button>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-900">
                         <thead class="bg-white/40 text-xs uppercase text-slate-900 border-b border-slate-300/60">
@@ -291,36 +298,53 @@
             const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
                          now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-            // LOGIKA PENGECEKAN DUPLIKAT DATA
-            // Mencari apakah barang dengan Nama, Peruntukan, Status, dan Jenis yang SAMA sudah ada
+            // LOGIKA LENGKAP: Memeriksa Nama, Deskripsi, Peruntukan, Status, dan Jenis Transaksi
             const existingIndex = inventoryData.findIndex(item => 
                 item.name.toLowerCase() === name.toLowerCase() &&
+                item.desc.toLowerCase() === desc.toLowerCase() &&
                 item.purpose.toLowerCase() === purpose.toLowerCase() &&
                 item.status === status &&
                 item.type === type
             );
 
             if (existingIndex !== -1) {
-                // Jika sudah ada: tambahkan jumlahnya dan perbarui waktunya
+                // Jika semua field persis sama: jumlah dikumulatifkan & waktu diperbarui
                 inventoryData[existingIndex].qty = parseInt(inventoryData[existingIndex].qty, 10) + inputQty;
-                inventoryData[existingIndex].date = date; // update waktu ke penambahan terbaru
-                
-                // Jika pengguna mengisi deskripsi baru, perbarui deskripsinya
-                if (desc !== "") {
-                    inventoryData[existingIndex].desc = desc;
-                }
+                inventoryData[existingIndex].date = date;
 
-                // Pindahkan item yang diperbarui ke paling atas tabel
+                // Pindahkan baris ke urutan paling atas
                 const updatedItem = inventoryData.splice(existingIndex, 1)[0];
                 inventoryData.unshift(updatedItem);
             } else {
-                // Jika belum ada: buat baris transaksi baru
+                // Jika ada salah satu field yang berbeda: buat baris baru
                 inventoryData.unshift({ name, desc, purpose, qty: inputQty, status, type, date });
             }
 
             form.reset();
             renderTable();
         });
+
+        // FUNGSI GABUNGKAN DUPLIKAT YANG SUDAH TERLANJUR TERSIMPAN
+        function mergeExistingDuplicates() {
+            const mergedMap = [];
+
+            inventoryData.forEach(item => {
+                const key = `${item.name.toLowerCase()}|${item.desc.toLowerCase()}|${item.purpose.toLowerCase()}|${item.status}|${item.type}`;
+                
+                const existing = mergedMap.find(m => m.key === key);
+                if (existing) {
+                    existing.data.qty = parseInt(existing.data.qty, 10) + parseInt(item.qty, 10);
+                } else {
+                    mergedMap.push({
+                        key: key,
+                        data: { ...item, qty: parseInt(item.qty, 10) }
+                    });
+                }
+            });
+
+            inventoryData = mergedMap.map(m => m.data);
+            renderTable();
+        }
 
         function deleteItem(index) {
             inventoryData.splice(index, 1);
