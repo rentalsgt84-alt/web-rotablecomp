@@ -3,354 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotable Component</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Rotable Component Rental Sangatta</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg-body: #f3f4f6;
-            --bg-card: #ffffff;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding: 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        .header {
-            margin-bottom: 24px;
-        }
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-        .header p {
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .stat-info h3 {
-            font-size: 13px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-        .stat-info p {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        .icon-blue { background: #dbeafe; color: var(--primary); }
-        .icon-green { background: #d1fae5; color: var(--success); }
-        .icon-red { background: #fee2e2; color: var(--danger); }
-
-        /* Main Content Layout */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 24px;
-        }
-        @media (max-width: 900px) {
-            .main-grid { grid-template-columns: 1fr; }
-        }
-
-        /* Card Container */
-        .card {
-            background: var(--bg-card);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 16px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--text-main);
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        .btn-submit {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background: var(--primary-hover);
-        }
-
-        /* Table Styles */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 14px;
-        }
-        th {
-            background: #f9fafb;
-            padding: 12px 16px;
-            font-weight: 600;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-        }
-        td {
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--border);
-        }
-        tbody tr:hover {
-            background: #f9fafb;
-        }
-
-        /* Badges */
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .badge-masuk { background: #d1fae5; color: #065f46; }
-        .badge-keluar { background: #fee2e2; color: #991b1b; }
-
-        .btn-delete {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        .btn-delete:hover {
-            color: var(--danger);
-            background: #fee2e2;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased p-4 md:p-8 min-h-screen">
 
-    <div class="header">
-        <h1>Rotable Component Rental Sangatta</h1>
-        <p>Sistem pencatatan dan pemantauan keluar-masuk barang terpadu</p>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-info">
-                <h3>Total Transaksi</h3>
-                <p id="stat-total">0</p>
-            </div>
-            <div class="stat-icon icon-blue"><i class="fa-solid fa-boxes-stacked"></i></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-info">
-                <h3>Barang Masuk</h3>
-                <p id="stat-masuk">0</p>
-            </div>
-            <div class="stat-icon icon-green"><i class="fa-solid fa-arrow-down"></i></div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-info">
-                <h3>Barang Keluar</h3>
-                <p id="stat-keluar">0</p>
-            </div>
-            <div class="stat-icon icon-red"><i class="fa-solid fa-arrow-up"></i></div>
-        </div>
-    </div>
-
-    <div class="main-grid">
-        <div class="card">
-            <h2 class="card-title"><i class="fa-solid fa-plus-circle"></i> Input Transaksi</h2>
-            <form id="inventory-form">
-                <div class="form-group">
-                    <label>Nama Barang</label>
-                    <input type="text" id="nama-barang" class="form-control" placeholder="Contoh: Laptop / Cyl" required>
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- Header dengan Logo dan Judul -->
+        <header class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <!-- Elemen Logo Gambar -->
+                <div class="w-14 h-14 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
+                    <!-- Ganti "logo.png" dengan nama file gambar logo Anda di GitHub atau link URL gambar -->
+                    <img src="https://www.unitedtractors.com/sekilas-perusahaan/" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=LOGO';">
                 </div>
-                <div class="form-group">
-                    <label>Jumlah</label>
-                    <input type="number" id="jumlah" class="form-control" placeholder="0" min="1" required>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">Rotable Component Rental Sangatta</h1>
+                    <p class="text-sm text-slate-500">Sistem Pencatatan Keluar Masuk Barang</p>
                 </div>
-                <div class="form-group">
-                    <label>Jenis Transaksi</label>
-                    <select id="jenis" class="form-control">
-                        <option value="Masuk">Barang Masuk</option>
-                        <option value="Keluar">Barang Keluar</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit"><i class="fa-solid fa-save"></i> Simpan Data</button>
-            </form>
-        </div>
+            </div>
+        </header>
 
-        <div class="card">
-            <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi</h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Waktu</th>
-                            <th>Nama Barang</th>
-                            <th>Jenis</th>
-                            <th>Jumlah</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="data-tabel">
+        <!-- Kartu Statistik -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Transaksi</p>
+                    <p id="statTotal" class="text-2xl font-bold text-slate-800">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+            </div>
+            
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Barang Masuk</p>
+                    <p id="statMasuk" class="text-2xl font-bold text-emerald-600">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-arrow-down-long"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Total Barang Keluar</p>
+                    <p id="statKeluar" class="text-2xl font-bold text-rose-600">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-arrow-up-long"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Form Input -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 h-fit">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-square-plus text-blue-600"></i> Form Pencatatan
+                </h2>
+                <form id="itemForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Nama Barang</label>
+                        <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Jumlah</label>
+                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Jenis Transaksi</label>
+                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                            <option value="Masuk">Barang Masuk</option>
+                            <option value="Keluar">Barang Keluar</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition duration-150 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> Simpan Transaksi
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabel Riwayat -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-xs uppercase text-slate-500 border-b border-slate-200">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold">Waktu</th>
+                                <th class="py-3 px-4 font-semibold">Nama Barang</th>
+                                <th class="py-3 px-4 font-semibold">Jenis</th>
+                                <th class="py-3 px-4 font-semibold">Jumlah</th>
+                                <th class="py-3 px-4 font-semibold text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logTable" class="divide-y divide-slate-100">
+                            <!-- Data dimasukkan via JS -->
                         </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
-        </div>
+
+        </main>
     </div>
 
     <script>
-        // Inisialisasi Data dari LocalStorage
         let inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
 
-        const form = document.getElementById('inventory-form');
-        const dataTabel = document.getElementById('data-tabel');
+        const form = document.getElementById('itemForm');
+        const logTable = document.getElementById('logTable');
 
-        function render() {
-            dataTabel.innerHTML = '';
+        function renderTable() {
+            logTable.innerHTML = '';
             let totalMasuk = 0;
             let totalKeluar = 0;
 
             if (inventoryData.length === 0) {
-                dataTabel.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 20px;">Belum ada data transaksi.</td></tr>`;
+                logTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-6 text-center text-slate-400 italic">Belum ada transaksi tercatat.</td>
+                    </tr>
+                `;
             } else {
                 inventoryData.forEach((item, index) => {
-                    const tr = document.createElement('tr');
-                    
-                    if (item.jenis === 'Masuk') totalMasuk += Number(item.jumlah);
-                    if (item.jenis === 'Keluar') totalKeluar += Number(item.jumlah);
+                    const qtyNum = parseInt(item.qty, 10) || 0;
+                    if (item.type === 'Masuk') totalMasuk += qtyNum;
+                    if (item.type === 'Keluar') totalKeluar += qtyNum;
 
-                    const badgeClass = item.jenis === 'Masuk' ? 'badge-masuk' : 'badge-keluar';
-                    const iconClass = item.jenis === 'Masuk' ? 'fa-arrow-down' : 'fa-arrow-up';
+                    const isMasuk = item.type === 'Masuk';
+                    const badgeStyle = isMasuk 
+                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                        : 'bg-rose-50 text-rose-700 border-rose-200';
+                    const iconStyle = isMasuk ? 'fa-arrow-down' : 'fa-arrow-up';
 
-                    tr.innerHTML = `
-                        <td>${item.waktu}</td>
-                        <td><strong>${item.nama}</strong></td>
-                        <td><span class="badge ${badgeClass}"><i class="fa-solid ${iconClass}"></i> ${item.jenis}</span></td>
-                        <td>${item.jumlah}</td>
-                        <td>
-                            <button class="btn-delete" onclick="hapusData(${index})"><i class="fa-solid fa-trash"></i></button>
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-slate-50/80 transition-colors';
+                    row.innerHTML = `
+                        <td class="py-3 px-4 text-xs text-slate-500">${item.date}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800">${item.name}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${badgeStyle}">
+                                <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 font-semibold text-slate-700">${qtyNum}</td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="deleteItem(${index})" class="text-slate-400 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </td>
                     `;
-                    dataTabel.appendChild(tr);
+                    logTable.appendChild(row);
                 });
             }
 
-            // Update statistik
-            document.getElementById('stat-total').innerText = inventoryData.length;
-            document.getElementById('stat-masuk').innerText = totalMasuk;
-            document.getElementById('stat-keluar').innerText = totalKeluar;
+            document.getElementById('statTotal').innerText = inventoryData.length;
+            document.getElementById('statMasuk').innerText = totalMasuk;
+            document.getElementById('statKeluar').innerText = totalKeluar;
 
-            // Simpan ke storage browser
             localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
         }
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const nama = document.getElementById('nama-barang').value;
-            const jumlah = document.getElementById('jumlah').value;
-            const jenis = document.getElementById('jenis').value;
-            
-            const skrg = new Date();
-            const waktu = skrg.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'medium' });
+            const name = document.getElementById('itemName').value;
+            const qty = document.getElementById('itemQty').value;
+            const type = document.getElementById('itemType').value;
+            const date = new Date().toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
 
-            inventoryData.unshift({ nama, jumlah, jenis, waktu });
-            
+            inventoryData.unshift({ name, qty, type, date });
+
             form.reset();
-            render();
+            renderTable();
         });
 
-        function hapusData(index) {
+        function deleteItem(index) {
             inventoryData.splice(index, 1);
-            render();
+            renderTable();
         }
 
-        // Jalankan saat pertama kali dibuka
-        render();
+        renderTable();
     </script>
 </body>
 </html>
