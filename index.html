@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Keluar Masuk Barang</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+        .container { max-width: 600px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
+        form { display: flex; gap: 10px; margin-bottom: 20px; }
+        input, select, button { padding: 8px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pencatatan Barang</h2>
+        <form id="itemForm">
+            <input type="text" id="itemName" placeholder="Nama Barang" required>
+            <input type="number" id="itemQty" placeholder="Jumlah" required min="1">
+            <select id="itemType">
+                <option value="Masuk">Masuk</option>
+                <option value="Keluar">Keluar</option>
+            </select>
+            <button type="submit">Tambah</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Nama Barang</th>
+                    <th>Jenis</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody id="logTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const form = document.getElementById('itemForm');
+        const logTable = document.getElementById('logTable');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('itemName').value;
+            const qty = document.getElementById('itemQty').value;
+            const type = document.getElementById('itemType').value;
+            const date = new Date().toLocaleString('id-ID');
+
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${date}</td><td>${name}</td><td>${type}</td><td>${qty}</td>`;
+            logTable.prepend(row);
+
+            form.reset();
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Keluar Masuk Barang</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
+        .container { max-width: 600px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
+        form { display: flex; gap: 10px; margin-bottom: 20px; }
+        input, select, button { padding: 8px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Pencatatan Barang</h2>
+        <form id="itemForm">
+            <input type="text" id="itemName" placeholder="Nama Barang" required>
+            <input type="number" id="itemQty" placeholder="Jumlah" required min="1">
+            <select id="itemType">
+                <option value="Masuk">Masuk</option>
+                <option value="Keluar">Keluar</option>
+            </select>
+            <button type="submit">Tambah</button>
+        </form>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Waktu</th>
+                    <th>Nama Barang</th>
+                    <th>Jenis</th>
+                    <th>Jumlah</th>
+                </tr>
+            </thead>
+            <tbody id="logTable"></tbody>
+        </table>
+    </div>
+
+    <script>
+        const form = document.getElementById('itemForm');
+        const logTable = document.getElementById('logTable');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('itemName').value;
+            const qty = document.getElementById('itemQty').value;
+            const type = document.getElementById('itemType').value;
+            const date = new Date().toLocaleString('id-ID');
+
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${date}</td><td>${name}</td><td>${type}</td><td>${qty}</td>`;
+            logTable.prepend(row);
+
+            form.reset();
+        });
+    </script>
+</body>
+</html>
