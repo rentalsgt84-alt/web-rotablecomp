@@ -11,8 +11,8 @@
 </head>
 <body class="bg-slate-900 text-slate-800 font-sans antialiased p-4 md:p-8 min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" style="background-image: url('bg.jpg');">
 
-    <!-- Lapisan Gelap Transparan Background -->
-    <div class="fixed inset-0 bg-black/30 -z-10"></div>
+    <!-- Lapisan Gelap Transparan Background (Diringankan agar gambar terang) -->
+    <div class="fixed inset-0 bg-black/20 -z-10"></div>
 
     <!-- ================= MODAL LOGIN ================= -->
     <div id="loginSection" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -46,50 +46,50 @@
     <div id="mainContent" class="max-w-7xl mx-auto space-y-6 hidden">
         
         <!-- Header -->
-        <header class="bg-white/15 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/20 flex items-center justify-between">
+        <header class="bg-white/5 p-6 rounded-xl shadow-2xl border border-white/20 flex items-center justify-between">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-lg bg-white/80 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
+                <div class="w-14 h-14 rounded-lg bg-white/90 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
                     <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=LOGO';">
                 </div>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">Rotable Component Rental Sangatta</h1>
-                    <p class="text-sm text-slate-800 font-medium">Sistem Pencatatan Keluar Masuk Barang</p>
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight drop-shadow-sm">Rotable Component Rental Sangatta</h1>
+                    <p class="text-sm text-slate-800 font-bold drop-shadow-sm">Sistem Pencatatan Keluar Masuk Barang</p>
                 </div>
             </div>
             <!-- Tombol Logout -->
-            <button onclick="logout()" class="text-xs bg-rose-600/90 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm font-semibold">
+            <button onclick="logout()" class="text-xs bg-rose-600 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md font-semibold">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </button>
         </header>
 
         <!-- Kartu Statistik -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white/15 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20 flex items-center justify-between">
+            <div class="bg-white/5 p-5 rounded-xl shadow-2xl border border-white/20 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE</p>
-                    <p id="statTotal" class="text-2xl font-bold text-slate-900">0</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1 drop-shadow-sm">TOTAL ROTABLE</p>
+                    <p id="statTotal" class="text-2xl font-extrabold text-slate-900">0</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-blue-500/30 text-blue-800 flex items-center justify-center text-lg font-bold">
+                <div class="w-10 h-10 rounded-lg bg-blue-600/40 text-blue-900 flex items-center justify-center text-lg font-bold">
                     <i class="fa-solid fa-receipt"></i>
                 </div>
             </div>
             
-            <div class="bg-white/15 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20 flex items-center justify-between">
+            <div class="bg-white/5 p-5 rounded-xl shadow-2xl border border-white/20 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE IN</p>
-                    <p id="statMasuk" class="text-2xl font-bold text-emerald-800">0</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1 drop-shadow-sm">TOTAL ROTABLE IN</p>
+                    <p id="statMasuk" class="text-2xl font-extrabold text-emerald-900">0</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-emerald-500/30 text-emerald-800 flex items-center justify-center text-lg font-bold">
+                <div class="w-10 h-10 rounded-lg bg-emerald-600/40 text-emerald-900 flex items-center justify-center text-lg font-bold">
                     <i class="fa-solid fa-arrow-down-long"></i>
                 </div>
             </div>
 
-            <div class="bg-white/15 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-white/20 flex items-center justify-between">
+            <div class="bg-white/5 p-5 rounded-xl shadow-2xl border border-white/20 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE OUT</p>
-                    <p id="statKeluar" class="text-2xl font-bold text-rose-800">0</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-1 drop-shadow-sm">TOTAL ROTABLE OUT</p>
+                    <p id="statKeluar" class="text-2xl font-extrabold text-rose-900">0</p>
                 </div>
-                <div class="w-10 h-10 rounded-lg bg-rose-500/30 text-rose-800 flex items-center justify-center text-lg font-bold">
+                <div class="w-10 h-10 rounded-lg bg-rose-600/40 text-rose-900 flex items-center justify-center text-lg font-bold">
                     <i class="fa-solid fa-arrow-up-long"></i>
                 </div>
             </div>
@@ -99,61 +99,61 @@
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- Form Input -->
-            <div class="bg-white/15 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/20 h-fit">
-                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <div class="bg-white/5 p-6 rounded-xl shadow-2xl border border-white/20 h-fit">
+                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2 drop-shadow-sm">
                     <i class="fa-solid fa-square-plus text-blue-600"></i> Form Pencatatan
                 </h2>
                 <form id="itemForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-900 mb-1">Nama Barang</label>
-                        <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/60 placeholder-slate-500">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Nama Barang</label>
+                        <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/40 placeholder-slate-600 font-medium">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-900 mb-1">Deskripsi Barang</label>
-                        <textarea id="itemDesc" rows="2" placeholder="Masukkan deskripsi/spesifikasi barang" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/60 placeholder-slate-500 resize-none"></textarea>
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Deskripsi Barang</label>
+                        <textarea id="itemDesc" rows="2" placeholder="Masukkan deskripsi/spesifikasi barang" class="w-full px-3 py-2 text-sm border border-slate-300/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/40 placeholder-slate-600 font-medium resize-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-900 mb-1">Peruntukan</label>
-                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/60 placeholder-slate-500">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Peruntukan</label>
+                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/40 placeholder-slate-600 font-medium">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-900 mb-1">Jumlah</label>
-                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/60 placeholder-slate-500">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Jumlah</label>
+                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/40 placeholder-slate-600 font-medium">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-900 mb-1">Jenis Transaksi</label>
-                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/60">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Jenis Transaksi</label>
+                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/40 font-medium">
                             <option value="Masuk">Barang Masuk</option>
                             <option value="Keluar">Barang Keluar</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition duration-150 flex items-center justify-center gap-2">
+                    <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-md transition duration-150 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-check"></i> Simpan Transaksi
                     </button>
                 </form>
             </div>
 
             <!-- Tabel Riwayat -->
-            <div class="lg:col-span-2 bg-white/15 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-white/20">
-                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+            <div class="lg:col-span-2 bg-white/5 p-6 rounded-xl shadow-2xl border border-white/20">
+                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2 drop-shadow-sm">
                     <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
                 </h2>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-900">
-                        <thead class="bg-white/30 text-xs uppercase text-slate-800 border-b border-slate-300/50">
+                        <thead class="bg-white/20 text-xs uppercase text-slate-900 border-b border-slate-300/50">
                             <tr>
-                                <th class="py-3 px-3 font-bold">Waktu</th>
-                                <th class="py-3 px-3 font-bold">Nama Barang</th>
-                                <th class="py-3 px-3 font-bold">Deskripsi</th>
-                                <th class="py-3 px-3 font-bold">Peruntukan</th>
-                                <th class="py-3 px-3 font-bold">Jenis</th>
-                                <th class="py-3 px-3 font-bold">Jumlah</th>
-                                <th class="py-3 px-3 font-bold text-center">Aksi</th>
+                                <th class="py-3 px-3 font-extrabold">Waktu</th>
+                                <th class="py-3 px-3 font-extrabold">Nama Barang</th>
+                                <th class="py-3 px-3 font-extrabold">Deskripsi</th>
+                                <th class="py-3 px-3 font-extrabold">Peruntukan</th>
+                                <th class="py-3 px-3 font-extrabold">Jenis</th>
+                                <th class="py-3 px-3 font-extrabold">Jumlah</th>
+                                <th class="py-3 px-3 font-extrabold text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="logTable" class="divide-y divide-slate-300/40">
@@ -220,7 +220,7 @@
             if (inventoryData.length === 0) {
                 logTable.innerHTML = `
                     <tr>
-                        <td colspan="7" class="py-6 text-center text-slate-800 italic font-semibold">Belum ada transaksi tercatat.</td>
+                        <td colspan="7" class="py-6 text-center text-slate-900 italic font-bold">Belum ada transaksi tercatat.</td>
                     </tr>
                 `;
             } else {
@@ -231,25 +231,25 @@
 
                     const isMasuk = item.type === 'Masuk';
                     const badgeStyle = isMasuk 
-                        ? 'bg-emerald-100/90 text-emerald-900 border-emerald-300' 
-                        : 'bg-rose-100/90 text-rose-900 border-rose-300';
+                        ? 'bg-emerald-200/90 text-emerald-950 border-emerald-400' 
+                        : 'bg-rose-200/90 text-rose-950 border-rose-400';
                     const iconStyle = isMasuk ? 'fa-arrow-down' : 'fa-arrow-up';
 
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-white/20 transition-colors';
                     row.innerHTML = `
-                        <td class="py-3 px-3 text-xs font-semibold text-slate-800 whitespace-nowrap">${item.date || '-'}</td>
-                        <td class="py-3 px-3 font-bold text-slate-900">${item.name || '-'}</td>
-                        <td class="py-3 px-3 text-xs font-medium text-slate-800">${item.desc || '-'}</td>
-                        <td class="py-3 px-3 text-xs font-semibold text-slate-900">${item.purpose || '-'}</td>
+                        <td class="py-3 px-3 text-xs font-bold text-slate-900 whitespace-nowrap">${item.date || '-'}</td>
+                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.name || '-'}</td>
+                        <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.desc || '-'}</td>
+                        <td class="py-3 px-3 text-xs font-extrabold text-slate-900">${item.purpose || '-'}</td>
                         <td class="py-3 px-3">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeStyle}">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}">
                                 <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || '-'}
                             </span>
                         </td>
-                        <td class="py-3 px-3 font-bold text-slate-900">${qtyNum}</td>
+                        <td class="py-3 px-3 font-extrabold text-slate-900">${qtyNum}</td>
                         <td class="py-3 px-3 text-center">
-                            <button onclick="deleteItem(${index})" class="text-slate-600 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
+                            <button onclick="deleteItem(${index})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </td>
