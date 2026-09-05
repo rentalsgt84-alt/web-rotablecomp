@@ -14,7 +14,7 @@
     <!-- Lapisan Gelap Transparan -->
     <div class="fixed inset-0 bg-black/40 -z-10"></div>
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6">
         
         <!-- Header -->
         <header class="bg-white/40 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/30 flex items-center justify-between">
@@ -33,7 +33,7 @@
         <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-white/40 backdrop-blur-md p-5 rounded-xl shadow-lg border border-white/30 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Total Rotable</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">TOTAL ROTABLE</p>
                     <p id="statTotal" class="text-2xl font-bold text-slate-900">0</p>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-700 flex items-center justify-center text-lg">
@@ -43,7 +43,7 @@
             
             <div class="bg-white/40 backdrop-blur-md p-5 rounded-xl shadow-lg border border-white/30 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Total Component In</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">TOTAL ROTABLE IN</p>
                     <p id="statMasuk" class="text-2xl font-bold text-emerald-700">0</p>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-700 flex items-center justify-center text-lg">
@@ -53,7 +53,7 @@
 
             <div class="bg-white/40 backdrop-blur-md p-5 rounded-xl shadow-lg border border-white/30 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">Total Component Out</p>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">TOTAL ROTABLE OUT</p>
                     <p id="statKeluar" class="text-2xl font-bold text-rose-700">0</p>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-rose-500/20 text-rose-700 flex items-center justify-center text-lg">
@@ -74,6 +74,16 @@
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Nama Barang</label>
                         <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-800 mb-1">Deskripsi Barang</label>
+                        <textarea id="itemDesc" rows="2" placeholder="Masukkan deskripsi/spesifikasi barang" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70 resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-800 mb-1">Peruntukan</label>
+                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
                     </div>
 
                     <div>
@@ -104,11 +114,13 @@
                     <table class="w-full text-left text-sm text-slate-800">
                         <thead class="bg-white/40 text-xs uppercase text-slate-700 border-b border-slate-300/50">
                             <tr>
-                                <th class="py-3 px-4 font-semibold">Waktu</th>
-                                <th class="py-3 px-4 font-semibold">Nama Barang</th>
-                                <th class="py-3 px-4 font-semibold">Jenis</th>
-                                <th class="py-3 px-4 font-semibold">Jumlah</th>
-                                <th class="py-3 px-4 font-semibold text-center">Aksi</th>
+                                <th class="py-3 px-3 font-semibold">Waktu</th>
+                                <th class="py-3 px-3 font-semibold">Nama Barang</th>
+                                <th class="py-3 px-3 font-semibold">Deskripsi</th>
+                                <th class="py-3 px-3 font-semibold">Peruntukan</th>
+                                <th class="py-3 px-3 font-semibold">Jenis</th>
+                                <th class="py-3 px-3 font-semibold">Jumlah</th>
+                                <th class="py-3 px-3 font-semibold text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="logTable" class="divide-y divide-slate-300/40">
@@ -135,7 +147,7 @@
             if (inventoryData.length === 0) {
                 logTable.innerHTML = `
                     <tr>
-                        <td colspan="5" class="py-6 text-center text-slate-700 italic font-medium">Belum ada transaksi tercatat.</td>
+                        <td colspan="7" class="py-6 text-center text-slate-700 italic font-medium">Belum ada transaksi tercatat.</td>
                     </tr>
                 `;
             } else {
@@ -153,15 +165,17 @@
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-white/30 transition-colors';
                     row.innerHTML = `
-                        <td class="py-3 px-4 text-xs font-medium text-slate-700">${item.date || '-'}</td>
-                        <td class="py-3 px-4 font-semibold text-slate-900">${item.name || '-'}</td>
-                        <td class="py-3 px-4">
+                        <td class="py-3 px-3 text-xs font-medium text-slate-700 whitespace-nowrap">${item.date || '-'}</td>
+                        <td class="py-3 px-3 font-semibold text-slate-900">${item.name || '-'}</td>
+                        <td class="py-3 px-3 text-xs text-slate-700">${item.desc || '-'}</td>
+                        <td class="py-3 px-3 text-xs font-medium text-slate-800">${item.purpose || '-'}</td>
+                        <td class="py-3 px-3">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeStyle}">
                                 <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || '-'}
                             </span>
                         </td>
-                        <td class="py-3 px-4 font-semibold text-slate-900">${qtyNum}</td>
-                        <td class="py-3 px-4 text-center">
+                        <td class="py-3 px-3 font-semibold text-slate-900">${qtyNum}</td>
+                        <td class="py-3 px-3 text-center">
                             <button onclick="deleteItem(${index})" class="text-slate-500 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -182,6 +196,8 @@
             e.preventDefault();
             
             const name = document.getElementById('itemName').value;
+            const desc = document.getElementById('itemDesc').value;
+            const purpose = document.getElementById('itemPurpose').value;
             const qty = document.getElementById('itemQty').value;
             const type = document.getElementById('itemType').value;
             
@@ -189,7 +205,7 @@
             const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
                          now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-            inventoryData.unshift({ name, qty, type, date });
+            inventoryData.unshift({ name, desc, purpose, qty, type, date });
 
             form.reset();
             renderTable();
