@@ -3,121 +3,354 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Keluar Masuk Barang</title>
+    <title>Dashboard Inventaris Barang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
-        .container { max-width: 600px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
-        form { display: flex; gap: 10px; margin-bottom: 20px; }
-        input, select, button { padding: 8px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #007bff; color: white; }
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 24px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-info h3 {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .stat-info p {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .icon-blue { background: #dbeafe; color: var(--primary); }
+        .icon-green { background: #d1fae5; color: var(--success); }
+        .icon-red { background: #fee2e2; color: var(--danger); }
+
+        /* Main Content Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Card Container */
+        .card {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+        th {
+            background: #f9fafb;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Badges */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .badge-masuk { background: #d1fae5; color: #065f46; }
+        .badge-keluar { background: #fee2e2; color: #991b1b; }
+
+        .btn-delete {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .btn-delete:hover {
+            color: var(--danger);
+            background: #fee2e2;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Pencatatan Barang</h2>
-        <form id="itemForm">
-            <input type="text" id="itemName" placeholder="Nama Barang" required>
-            <input type="number" id="itemQty" placeholder="Jumlah" required min="1">
-            <select id="itemType">
-                <option value="Masuk">Masuk</option>
-                <option value="Keluar">Keluar</option>
-            </select>
-            <button type="submit">Tambah</button>
-        </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Waktu</th>
-                    <th>Nama Barang</th>
-                    <th>Jenis</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody id="logTable"></tbody>
-        </table>
+    <div class="header">
+        <h1>Dashboard Inventaris</h1>
+        <p>Sistem pencatatan dan pemantauan keluar-masuk barang terpadu</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3>Total Transaksi</h3>
+                <p id="stat-total">0</p>
+            </div>
+            <div class="stat-icon icon-blue"><i class="fa-solid fa-boxes-stacked"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3>Barang Masuk</h3>
+                <p id="stat-masuk">0</p>
+            </div>
+            <div class="stat-icon icon-green"><i class="fa-solid fa-arrow-down"></i></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-info">
+                <h3>Barang Keluar</h3>
+                <p id="stat-keluar">0</p>
+            </div>
+            <div class="stat-icon icon-red"><i class="fa-solid fa-arrow-up"></i></div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-plus-circle"></i> Input Transaksi</h2>
+            <form id="inventory-form">
+                <div class="form-group">
+                    <label>Nama Barang</label>
+                    <input type="text" id="nama-barang" class="form-control" placeholder="Contoh: Laptop / Cyl" required>
+                </div>
+                <div class="form-group">
+                    <label>Jumlah</label>
+                    <input type="number" id="jumlah" class="form-control" placeholder="0" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Transaksi</label>
+                    <select id="jenis" class="form-control">
+                        <option value="Masuk">Barang Masuk</option>
+                        <option value="Keluar">Barang Keluar</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-save"></i> Simpan Data</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu</th>
+                            <th>Nama Barang</th>
+                            <th>Jenis</th>
+                            <th>Jumlah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-tabel">
+                        </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
-        const form = document.getElementById('itemForm');
-        const logTable = document.getElementById('logTable');
+        // Inisialisasi Data dari LocalStorage
+        let inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
+
+        const form = document.getElementById('inventory-form');
+        const dataTabel = document.getElementById('data-tabel');
+
+        function render() {
+            dataTabel.innerHTML = '';
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            if (inventoryData.length === 0) {
+                dataTabel.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted); padding: 20px;">Belum ada data transaksi.</td></tr>`;
+            } else {
+                inventoryData.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    
+                    if (item.jenis === 'Masuk') totalMasuk += Number(item.jumlah);
+                    if (item.jenis === 'Keluar') totalKeluar += Number(item.jumlah);
+
+                    const badgeClass = item.jenis === 'Masuk' ? 'badge-masuk' : 'badge-keluar';
+                    const iconClass = item.jenis === 'Masuk' ? 'fa-arrow-down' : 'fa-arrow-up';
+
+                    tr.innerHTML = `
+                        <td>${item.waktu}</td>
+                        <td><strong>${item.nama}</strong></td>
+                        <td><span class="badge ${badgeClass}"><i class="fa-solid ${iconClass}"></i> ${item.jenis}</span></td>
+                        <td>${item.jumlah}</td>
+                        <td>
+                            <button class="btn-delete" onclick="hapusData(${index})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    dataTabel.appendChild(tr);
+                });
+            }
+
+            // Update statistik
+            document.getElementById('stat-total').innerText = inventoryData.length;
+            document.getElementById('stat-masuk').innerText = totalMasuk;
+            document.getElementById('stat-keluar').innerText = totalKeluar;
+
+            // Simpan ke storage browser
+            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+        }
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('itemName').value;
-            const qty = document.getElementById('itemQty').value;
-            const type = document.getElementById('itemType').value;
-            const date = new Date().toLocaleString('id-ID');
+            
+            const nama = document.getElementById('nama-barang').value;
+            const jumlah = document.getElementById('jumlah').value;
+            const jenis = document.getElementById('jenis').value;
+            
+            const skrg = new Date();
+            const waktu = skrg.toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'medium' });
 
-            const row = document.createElement('tr');
-            row.innerHTML = `<td>${date}</td><td>${name}</td><td>${type}</td><td>${qty}</td>`;
-            logTable.prepend(row);
-
+            inventoryData.unshift({ nama, jumlah, jenis, waktu });
+            
             form.reset();
+            render();
         });
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Keluar Masuk Barang</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f9; }
-        .container { max-width: 600px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
-        form { display: flex; gap: 10px; margin-bottom: 20px; }
-        input, select, button { padding: 8px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #007bff; color: white; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Pencatatan Barang</h2>
-        <form id="itemForm">
-            <input type="text" id="itemName" placeholder="Nama Barang" required>
-            <input type="number" id="itemQty" placeholder="Jumlah" required min="1">
-            <select id="itemType">
-                <option value="Masuk">Masuk</option>
-                <option value="Keluar">Keluar</option>
-            </select>
-            <button type="submit">Tambah</button>
-        </form>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Waktu</th>
-                    <th>Nama Barang</th>
-                    <th>Jenis</th>
-                    <th>Jumlah</th>
-                </tr>
-            </thead>
-            <tbody id="logTable"></tbody>
-        </table>
-    </div>
+        function hapusData(index) {
+            inventoryData.splice(index, 1);
+            render();
+        }
 
-    <script>
-        const form = document.getElementById('itemForm');
-        const logTable = document.getElementById('logTable');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('itemName').value;
-            const qty = document.getElementById('itemQty').value;
-            const type = document.getElementById('itemType').value;
-            const date = new Date().toLocaleString('id-ID');
-
-            const row = document.createElement('tr');
-            row.innerHTML = `<td>${date}</td><td>${name}</td><td>${type}</td><td>${qty}</td>`;
-            logTable.prepend(row);
-
-            form.reset();
-        });
+        // Jalankan saat pertama kali dibuka
+        render();
     </script>
 </body>
 </html>
