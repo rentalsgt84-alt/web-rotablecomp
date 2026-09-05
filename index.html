@@ -39,6 +39,12 @@
                     <i class="fa-solid fa-right-to-bracket"></i> Login
                 </button>
             </form>
+            
+            <div class="mt-6 pt-4 border-t border-slate-200/80 text-[11px] text-slate-500 space-y-1">
+                <p class="font-bold text-slate-700">Petunjuk Akun Login:</p>
+                <p>• Admin (Full Edit & Input): <span class="font-mono text-slate-800">admin / sangatta123</span></p>
+                <p>• Viewer (Hanya Lihat): <span class="font-mono text-slate-800">viewer / viewersangatta</span></p>
+            </div>
         </div>
     </div>
 
@@ -56,10 +62,16 @@
                     <p class="text-sm text-slate-800 font-semibold">Sistem Pencatatan Keluar Masuk Barang</p>
                 </div>
             </div>
-            <!-- Tombol Logout -->
-            <button onclick="logout()" class="text-xs bg-rose-600/90 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md font-semibold">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </button>
+            
+            <!-- User Status & Logout -->
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p id="userRoleBadge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-800 text-white inline-block shadow-sm">Role</p>
+                </div>
+                <button onclick="logout()" class="text-xs bg-rose-600/90 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md font-semibold">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
         </header>
 
         <!-- Kartu Statistik -->
@@ -96,10 +108,10 @@
         </section>
 
         <!-- Main Content -->
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <main id="mainGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Form Input -->
-            <div class="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40 h-fit">
+            <!-- Form Input (Hanya Tampak Jika Admin) -->
+            <div id="formSection" class="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40 h-fit">
                 <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-square-plus text-blue-600"></i> Form Pencatatan
                 </h2>
@@ -149,13 +161,13 @@
             </div>
 
             <!-- Tabel Riwayat -->
-            <div class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
+            <div id="tableSection" class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
                     </h2>
-                    <!-- Tombol untuk merapikan/menggabungkan data terpisah yang sudah ada -->
-                    <button onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
+                    <!-- Tombol Gabung Data (Khusus Admin) -->
+                    <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
                         <i class="fa-solid fa-compress"></i> Gabungkan Data Duplikat
                     </button>
                 </div>
@@ -171,7 +183,7 @@
                                 <th class="py-3 px-3 font-extrabold">Status</th>
                                 <th class="py-3 px-3 font-extrabold">Jenis</th>
                                 <th class="py-3 px-3 font-extrabold">Jumlah</th>
-                                <th class="py-3 px-3 font-extrabold text-center">Aksi</th>
+                                <th id="thAction" class="py-3 px-3 font-extrabold text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="logTable" class="divide-y divide-slate-300/50">
@@ -185,19 +197,50 @@
     </div>
 
     <script>
-        // ================= KONFIGURASI LOGIN =================
-        const USERNAME_BENAR = "admin";
-        const PASSWORD_BENAR = "sangatta123";
+        // ================= KONFIGURASI LOGIN & ROLE =================
+        const ACCOUNTS = {
+            "admin": { password: "sangatta123", role: "admin" },
+            "viewer": { password: "viewersangatta", role: "viewer" }
+        };
 
         const loginSection = document.getElementById('loginSection');
         const mainContent = document.getElementById('mainContent');
         const loginForm = document.getElementById('loginForm');
         const loginError = document.getElementById('loginError');
+        
+        const formSection = document.getElementById('formSection');
+        const tableSection = document.getElementById('tableSection');
+        const btnMergeDuplicates = document.getElementById('btnMergeDuplicates');
+        const thAction = document.getElementById('thAction');
+        const userRoleBadge = document.getElementById('userRoleBadge');
 
         function checkSession() {
-            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+            const currentRole = sessionStorage.getItem('userRole');
+            
+            if (currentRole) {
                 loginSection.classList.add('hidden');
                 mainContent.classList.remove('hidden');
+
+                if (currentRole === 'admin') {
+                    formSection.classList.remove('hidden');
+                    btnMergeDuplicates.classList.remove('hidden');
+                    thAction.classList.remove('hidden');
+                    tableSection.classList.remove('lg:col-span-3');
+                    tableSection.classList.add('lg:col-span-2');
+                    
+                    userRoleBadge.innerText = 'Admin (Edit Mode)';
+                    userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-700 text-white inline-block shadow-sm';
+                } else if (currentRole === 'viewer') {
+                    formSection.classList.add('hidden');
+                    btnMergeDuplicates.classList.add('hidden');
+                    thAction.classList.add('hidden');
+                    tableSection.classList.remove('lg:col-span-2');
+                    tableSection.classList.add('lg:col-span-3');
+                    
+                    userRoleBadge.innerText = 'Viewer (Read-Only)';
+                    userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-600 text-white inline-block shadow-sm';
+                }
+
                 renderTable();
             } else {
                 loginSection.classList.remove('hidden');
@@ -207,11 +250,11 @@
 
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const userInput = document.getElementById('loginUsername').value;
-            const passInput = document.getElementById('loginPassword').value;
+            const userInput = document.getElementById('loginUsername').value.trim();
+            const passInput = document.getElementById('loginPassword').value.trim();
 
-            if (userInput === USERNAME_BENAR && passInput === PASSWORD_BENAR) {
-                sessionStorage.setItem('isLoggedIn', 'true');
+            if (ACCOUNTS[userInput] && ACCOUNTS[userInput].password === passInput) {
+                sessionStorage.setItem('userRole', ACCOUNTS[userInput].role);
                 loginError.classList.add('hidden');
                 checkSession();
             } else {
@@ -220,7 +263,7 @@
         });
 
         function logout() {
-            sessionStorage.removeItem('isLoggedIn');
+            sessionStorage.removeItem('userRole');
             checkSession();
         }
 
@@ -234,11 +277,13 @@
             logTable.innerHTML = '';
             let totalMasuk = 0;
             let totalKeluar = 0;
+            const currentRole = sessionStorage.getItem('userRole');
 
             if (inventoryData.length === 0) {
+                const colSpanCount = currentRole === 'admin' ? 8 : 7;
                 logTable.innerHTML = `
                     <tr>
-                        <td colspan="8" class="py-6 text-center text-slate-900 italic font-bold">Belum ada transaksi tercatat.</td>
+                        <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">Belum ada transaksi tercatat.</td>
                     </tr>
                 `;
             } else {
@@ -252,6 +297,14 @@
                         ? 'bg-emerald-200/90 text-emerald-950 border-emerald-400' 
                         : 'bg-rose-200/90 text-rose-950 border-rose-400';
                     const iconStyle = isMasuk ? 'fa-arrow-down' : 'fa-arrow-up';
+
+                    const actionTd = currentRole === 'admin' ? `
+                        <td class="py-3 px-3 text-center">
+                            <button onclick="deleteItem(${index})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    ` : '';
 
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-white/30 transition-colors';
@@ -267,11 +320,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-3 font-extrabold text-slate-900">${qtyNum}</td>
-                        <td class="py-3 px-3 text-center">
-                            <button onclick="deleteItem(${index})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
+                        ${actionTd}
                     `;
                     logTable.appendChild(row);
                 });
@@ -298,7 +347,6 @@
             const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
                          now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-            // LOGIKA LENGKAP: Memeriksa Nama, Deskripsi, Peruntukan, Status, dan Jenis Transaksi
             const existingIndex = inventoryData.findIndex(item => 
                 item.name.toLowerCase() === name.toLowerCase() &&
                 item.desc.toLowerCase() === desc.toLowerCase() &&
@@ -308,15 +356,12 @@
             );
 
             if (existingIndex !== -1) {
-                // Jika semua field persis sama: jumlah dikumulatifkan & waktu diperbarui
                 inventoryData[existingIndex].qty = parseInt(inventoryData[existingIndex].qty, 10) + inputQty;
                 inventoryData[existingIndex].date = date;
 
-                // Pindahkan baris ke urutan paling atas
                 const updatedItem = inventoryData.splice(existingIndex, 1)[0];
                 inventoryData.unshift(updatedItem);
             } else {
-                // Jika ada salah satu field yang berbeda: buat baris baru
                 inventoryData.unshift({ name, desc, purpose, qty: inputQty, status, type, date });
             }
 
@@ -324,7 +369,6 @@
             renderTable();
         });
 
-        // FUNGSI GABUNGKAN DUPLIKAT YANG SUDAH TERLANJUR TERSIMPAN
         function mergeExistingDuplicates() {
             const mergedMap = [];
 
@@ -347,8 +391,10 @@
         }
 
         function deleteItem(index) {
-            inventoryData.splice(index, 1);
-            renderTable();
+            if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+                inventoryData.splice(index, 1);
+                renderTable();
+            }
         }
 
         checkSession();
