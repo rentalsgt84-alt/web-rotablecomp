@@ -42,7 +42,7 @@
         </div>
     </div>
 
-    <!-- ================= KONTEN UTAMA WEB (Hidden Sebelum Login) ================= -->
+    <!-- ================= KONTEN UTAMA WEB ================= -->
     <div id="mainContent" class="max-w-7xl mx-auto space-y-6 hidden">
         
         <!-- Header -->
@@ -280,10 +280,10 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const name = document.getElementById('itemName').value;
-            const desc = document.getElementById('itemDesc').value;
-            const purpose = document.getElementById('itemPurpose').value;
-            const qty = document.getElementById('itemQty').value;
+            const name = document.getElementById('itemName').value.trim();
+            const desc = document.getElementById('itemDesc').value.trim();
+            const purpose = document.getElementById('itemPurpose').value.trim();
+            const inputQty = parseInt(document.getElementById('itemQty').value, 10) || 0;
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
             
@@ -291,7 +291,32 @@
             const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
                          now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-            inventoryData.unshift({ name, desc, purpose, qty, status, type, date });
+            // LOGIKA PENGECEKAN DUPLIKAT DATA
+            // Mencari apakah barang dengan Nama, Peruntukan, Status, dan Jenis yang SAMA sudah ada
+            const existingIndex = inventoryData.findIndex(item => 
+                item.name.toLowerCase() === name.toLowerCase() &&
+                item.purpose.toLowerCase() === purpose.toLowerCase() &&
+                item.status === status &&
+                item.type === type
+            );
+
+            if (existingIndex !== -1) {
+                // Jika sudah ada: tambahkan jumlahnya dan perbarui waktunya
+                inventoryData[existingIndex].qty = parseInt(inventoryData[existingIndex].qty, 10) + inputQty;
+                inventoryData[existingIndex].date = date; // update waktu ke penambahan terbaru
+                
+                // Jika pengguna mengisi deskripsi baru, perbarui deskripsinya
+                if (desc !== "") {
+                    inventoryData[existingIndex].desc = desc;
+                }
+
+                // Pindahkan item yang diperbarui ke paling atas tabel
+                const updatedItem = inventoryData.splice(existingIndex, 1)[0];
+                inventoryData.unshift(updatedItem);
+            } else {
+                // Jika belum ada: buat baris transaksi baru
+                inventoryData.unshift({ name, desc, purpose, qty: inputQty, status, type, date });
+            }
 
             form.reset();
             renderTable();
