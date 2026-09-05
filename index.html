@@ -127,13 +127,18 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Unite Model</label>
-                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Peruntukan / Lokasi</label>
+                        <input type="text" id="itemPurpose" placeholder="Contoh: Pit3, Workshop, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium">
                     </div>
 
+                    <!-- DROPDOWN UNIT MODEL -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Jumlah</label>
-                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium">
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Unit Model</label>
+                        <select id="itemQty" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
+                            <option value="HD785-7">HD785-7</option>
+                            <option value="HD1500-8">HD1500-8</option>
+                            <option value="D375A-6R">D375A-6R</option>
+                        </select>
                     </div>
 
                     <div>
@@ -166,7 +171,6 @@
                     <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
                     </h2>
-                    <!-- Tombol Gabung Data (Khusus Admin) -->
                     <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
                         <i class="fa-solid fa-compress"></i> Gabungkan Data Duplikat
                     </button>
@@ -177,12 +181,12 @@
                         <thead class="bg-white/40 text-xs uppercase text-slate-900 border-b border-slate-300/60">
                             <tr>
                                 <th class="py-3 px-3 font-extrabold">Waktu</th>
-                                <th class="py-3 px-3 font-extrabold">Nama Barang</th>
+                                <th class="py-3 px-3 font-extrabold">Part Number</th>
                                 <th class="py-3 px-3 font-extrabold">Deskripsi</th>
                                 <th class="py-3 px-3 font-extrabold">Peruntukan</th>
                                 <th class="py-3 px-3 font-extrabold">Status</th>
                                 <th class="py-3 px-3 font-extrabold">Jenis</th>
-                                <th class="py-3 px-3 font-extrabold">Jumlah</th>
+                                <th class="py-3 px-3 font-extrabold">Unit Model</th>
                                 <th id="thAction" class="py-3 px-3 font-extrabold text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -273,6 +277,12 @@
         const form = document.getElementById('itemForm');
         const logTable = document.getElementById('logTable');
 
+        function getCurrentFormattedDate() {
+            const now = new Date();
+            return now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
+                   now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+
         function renderTable() {
             logTable.innerHTML = '';
             let totalMasuk = 0;
@@ -288,9 +298,8 @@
                 `;
             } else {
                 inventoryData.forEach((item, index) => {
-                    const qtyNum = parseInt(item.qty, 10) || 0;
-                    if (item.type === 'Masuk') totalMasuk += qtyNum;
-                    if (item.type === 'Keluar') totalKeluar += qtyNum;
+                    if (item.type === 'Masuk') totalMasuk += 1;
+                    if (item.type === 'Keluar') totalKeluar += 1;
 
                     const isMasuk = item.type === 'Masuk';
                     const badgeStyle = isMasuk 
@@ -319,7 +328,7 @@
                                 <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || '-'}
                             </span>
                         </td>
-                        <td class="py-3 px-3 font-extrabold text-slate-900">${qtyNum}</td>
+                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.qty || '-'}</td>
                         ${actionTd}
                     `;
                     logTable.appendChild(row);
@@ -339,30 +348,26 @@
             const name = document.getElementById('itemName').value.trim();
             const desc = document.getElementById('itemDesc').value.trim();
             const purpose = document.getElementById('itemPurpose').value.trim();
-            const inputQty = parseInt(document.getElementById('itemQty').value, 10) || 0;
+            const selectedQty = document.getElementById('itemQty').value;
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
-            
-            const now = new Date();
-            const date = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
-                         now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const date = getCurrentFormattedDate();
 
             const existingIndex = inventoryData.findIndex(item => 
                 item.name.toLowerCase() === name.toLowerCase() &&
                 item.desc.toLowerCase() === desc.toLowerCase() &&
                 item.purpose.toLowerCase() === purpose.toLowerCase() &&
+                item.qty === selectedQty &&
                 item.status === status &&
                 item.type === type
             );
 
             if (existingIndex !== -1) {
-                inventoryData[existingIndex].qty = parseInt(inventoryData[existingIndex].qty, 10) + inputQty;
                 inventoryData[existingIndex].date = date;
-
                 const updatedItem = inventoryData.splice(existingIndex, 1)[0];
                 inventoryData.unshift(updatedItem);
             } else {
-                inventoryData.unshift({ name, desc, purpose, qty: inputQty, status, type, date });
+                inventoryData.unshift({ name, desc, purpose, qty: selectedQty, status, type, date });
             }
 
             form.reset();
@@ -373,15 +378,15 @@
             const mergedMap = [];
 
             inventoryData.forEach(item => {
-                const key = `${item.name.toLowerCase()}|${item.desc.toLowerCase()}|${item.purpose.toLowerCase()}|${item.status}|${item.type}`;
+                const key = `${item.name.toLowerCase()}|${item.desc.toLowerCase()}|${item.purpose.toLowerCase()}|${item.qty}|${item.status}|${item.type}`;
                 
                 const existing = mergedMap.find(m => m.key === key);
                 if (existing) {
-                    existing.data.qty = parseInt(existing.data.qty, 10) + parseInt(item.qty, 10);
+                    existing.data.date = getCurrentFormattedDate();
                 } else {
                     mergedMap.push({
                         key: key,
-                        data: { ...item, qty: parseInt(item.qty, 10) }
+                        data: { ...item }
                     });
                 }
             });
