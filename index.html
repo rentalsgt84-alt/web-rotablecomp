@@ -11,10 +11,39 @@
 </head>
 <body class="bg-slate-900 text-slate-800 font-sans antialiased p-4 md:p-8 min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" style="background-image: url('bg.jpg');">
 
-    <!-- Lapisan Gelap Transparan -->
+    <!-- Lapisan Gelap Transparan Background -->
     <div class="fixed inset-0 bg-black/40 -z-10"></div>
 
-    <div class="max-w-7xl mx-auto space-y-6">
+    <!-- ================= MODAL LOGIN ================= -->
+    <div id="loginSection" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/50 w-full max-w-md">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden mx-auto shadow-sm mb-3">
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=LOGO';">
+                </div>
+                <h2 class="text-xl font-bold text-slate-900">Masuk ke Sistem</h2>
+                <p class="text-xs text-slate-600 mt-1">Rotable Component Rental Sangatta</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                </div>
+                <p id="loginError" class="text-xs text-rose-600 font-semibold hidden text-center">Username atau password salah!</p>
+                <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition duration-150 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= KONTEN UTAMA WEB (Hidden Sebelum Login) ================= -->
+    <div id="mainContent" class="max-w-7xl mx-auto space-y-6 hidden">
         
         <!-- Header -->
         <header class="bg-white/40 backdrop-blur-md p-6 rounded-xl shadow-lg border border-white/30 flex items-center justify-between">
@@ -27,6 +56,10 @@
                     <p class="text-sm text-slate-700 font-medium">Sistem Pencatatan Keluar Masuk Barang</p>
                 </div>
             </div>
+            <!-- Tombol Logout -->
+            <button onclick="logout()" class="text-xs bg-rose-600/90 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm font-semibold">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
         </header>
 
         <!-- Kartu Statistik -->
@@ -73,27 +106,27 @@
                 <form id="itemForm" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Nama Barang</label>
-                        <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
+                        <input type="text" id="itemName" placeholder="Masukkan nama barang" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Deskripsi Barang</label>
-                        <textarea id="itemDesc" rows="2" placeholder="Masukkan deskripsi/spesifikasi barang" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70 resize-none"></textarea>
+                        <textarea id="itemDesc" rows="2" placeholder="Masukkan deskripsi/spesifikasi barang" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 resize-none"></textarea>
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Peruntukan</label>
-                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
+                        <input type="text" id="itemPurpose" placeholder="Contoh: Unit HD785-7, Pit3, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Jumlah</label>
-                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
+                        <input type="number" id="itemQty" placeholder="0" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold text-slate-800 mb-1">Jenis Transaksi</label>
-                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/70">
+                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70">
                             <option value="Masuk">Barang Masuk</option>
                             <option value="Keluar">Barang Keluar</option>
                         </select>
@@ -134,6 +167,49 @@
     </div>
 
     <script>
+        // ================= KONFIGURASI LOGIN =================
+        const USERNAME_BENAR = "admin";
+        const PASSWORD_BENAR = "sangatta123";
+
+        const loginSection = document.getElementById('loginSection');
+        const mainContent = document.getElementById('mainContent');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+
+        // Cek Sesi Login saat halaman dimuat
+        function checkSession() {
+            if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                loginSection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                renderTable();
+            } else {
+                loginSection.classList.remove('hidden');
+                mainContent.classList.add('hidden');
+            }
+        }
+
+        // Handle Submit Form Login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userInput = document.getElementById('loginUsername').value;
+            const passInput = document.getElementById('loginPassword').value;
+
+            if (userInput === USERNAME_BENAR && passInput === PASSWORD_BENAR) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                loginError.classList.add('hidden');
+                checkSession();
+            } else {
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        // Handle Logout
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            checkSession();
+        }
+
+        // ================= SISTEM PENCATATAN =================
         let inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
 
         const form = document.getElementById('itemForm');
@@ -216,7 +292,8 @@
             renderTable();
         }
 
-        renderTable();
+        // Inisialisasi awal saat halaman dibuka
+        checkSession();
     </script>
 </body>
 </html>
