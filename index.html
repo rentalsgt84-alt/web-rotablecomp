@@ -165,14 +165,11 @@
                         <i class="fa-solid fa-list-check text-blue-600"></i> Component History
                     </h2>
                     
-                    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
                         <div class="relative flex-1 sm:w-64">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
                             <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Cari Part Description..." class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 placeholder-slate-500 font-medium shadow-sm">
                         </div>
-                        <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
-                            <i class="fa-solid fa-compress"></i> Gabungkan Duplikat
-                        </button>
                     </div>
                 </div>
 
@@ -180,7 +177,6 @@
                     <table class="w-full text-left text-sm text-slate-900">
                         <thead class="bg-white/40 text-xs uppercase text-slate-900 border-b border-slate-300/60">
                             <tr>
-                                <th class="py-3 px-3 font-extrabold">Date</th>
                                 <th class="py-3 px-3 font-extrabold">Part Number</th>
                                 <th class="py-3 px-3 font-extrabold">Part Description</th>
                                 <th class="py-3 px-3 font-extrabold text-center">QTY</th>
@@ -214,7 +210,6 @@
         
         const formSection = document.getElementById('formSection');
         const tableSection = document.getElementById('tableSection');
-        const btnMergeDuplicates = document.getElementById('btnMergeDuplicates');
         const thAction = document.getElementById('thAction');
         const userRoleBadge = document.getElementById('userRoleBadge');
 
@@ -227,7 +222,6 @@
 
                 if (currentRole === 'admin') {
                     formSection.classList.remove('hidden');
-                    btnMergeDuplicates.classList.remove('hidden');
                     thAction.classList.remove('hidden');
                     tableSection.classList.remove('lg:col-span-3');
                     tableSection.classList.add('lg:col-span-2');
@@ -236,7 +230,6 @@
                     userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-700 text-white inline-block shadow-sm';
                 } else if (currentRole === 'viewer') {
                     formSection.classList.add('hidden');
-                    btnMergeDuplicates.classList.add('hidden');
                     thAction.classList.add('hidden');
                     tableSection.classList.remove('lg:col-span-2');
                     tableSection.classList.add('lg:col-span-3');
@@ -280,34 +273,56 @@
             inventoryData = [];
         }
 
+        // Fungsi pembersihan awal untuk mengonsolidasi data yang ada saat pertama dibuka
+        function autoConsolidateData() {
+            const grouped = {};
+            inventoryData.forEach(item => {
+                const name = item.name || '';
+                const desc = item.desc || '';
+                const unitModel = item.unitModel || item.qty || '';
+                const status = item.status || '';
+                const type = item.type || '';
+                const qtyVal = typeof item.qty === 'number' ? item.qty : 1;
+
+                const key = `${name.toLowerCase()}|${desc.toLowerCase()}|${unitModel.toLowerCase()}|${status.toLowerCase()}|${type.toLowerCase()}`;
+                
+                if (grouped[key]) {
+                    grouped[key].qty += qtyVal;
+                } else {
+                    grouped[key] = {
+                        name,
+                        desc,
+                        unitModel,
+                        status,
+                        type,
+                        qty: qtyVal
+                    };
+                }
+            });
+
+            inventoryData = Object.values(grouped);
+            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+        }
+
+        autoConsolidateData();
+
         const form = document.getElementById('itemForm');
         const logTable = document.getElementById('logTable');
-
-        function getCurrentFormattedDate() {
-            const now = new Date();
-            return now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + 
-                   now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-        }
 
         function renderTable() {
             logTable.innerHTML = '';
             let totalMasuk = 0;
             let totalKeluar = 0;
+            let totalRotable = 0;
             const currentRole = sessionStorage.getItem('userRole');
             
             const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
 
-            // Hitung statistik
             inventoryData.forEach(item => {
-                if (item.type === 'Masuk') totalMasuk += 1;
-                if (item.type === 'Keluar') totalKeluar += 1;
-            });
-
-            // Hitung frekuensi data identik untuk menentukan QTY
-            const countMap = {};
-            inventoryData.forEach(item => {
-                const key = `${(item.name || '').toLowerCase()}|${(item.desc || '').toLowerCase()}|${item.unitModel || item.qty || ''}|${item.status || ''}|${item.type || ''}`;
-                countMap[key] = (countMap[key] || 0) + 1;
+                const itemQty = item.qty || 1;
+                totalRotable += itemQty;
+                if (item.type === 'Masuk') totalMasuk += itemQty;
+                if (item.type === 'Keluar') totalKeluar += itemQty;
             });
 
             const filteredData = inventoryData.filter(item => 
@@ -315,7 +330,7 @@
             );
 
             if (filteredData.length === 0) {
-                const colSpanCount = currentRole === 'admin' ? 8 : 7;
+                const colSpanCount = currentRole === 'admin' ? 7 : 6;
                 const emptyMessage = searchKeyword 
                     ? `Tidak ditemukan deskripsi yang cocok dengan "${searchKeyword}".` 
                     : 'Belum ada transaksi tercatat.';
@@ -335,10 +350,6 @@
                         : 'bg-rose-200/90 text-rose-950 border-rose-400';
                     const iconStyle = isMasuk ? 'fa-arrow-down' : 'fa-arrow-up';
 
-                    // Ambil jumlah item identik yang terhitung
-                    const itemKey = `${(item.name || '').toLowerCase()}|${(item.desc || '').toLowerCase()}|${item.unitModel || item.qty || ''}|${item.status || ''}|${item.type || ''}`;
-                    const calculatedQty = countMap[itemKey] || 1;
-
                     const actionTd = currentRole === 'admin' ? `
                         <td class="py-3 px-3 text-center">
                             <button onclick="deleteItem(${originalIndex})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
@@ -350,11 +361,10 @@
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-white/30 transition-colors';
                     row.innerHTML = `
-                        <td class="py-3 px-3 text-xs font-bold text-slate-900 whitespace-nowrap">${item.date || '-'}</td>
                         <td class="py-3 px-3 font-extrabold text-slate-900">${item.name || '-'}</td>
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.desc || '-'}</td>
-                        <td class="py-3 px-3 font-extrabold text-center text-slate-900">${calculatedQty}</td>
-                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.unitModel || item.qty || '-'}</td>
+                        <td class="py-3 px-3 font-extrabold text-center text-slate-900">${item.qty || 1}</td>
+                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.unitModel || '-'}</td>
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
                         <td class="py-3 px-3">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}">
@@ -367,7 +377,7 @@
                 });
             }
 
-            document.getElementById('statTotal').innerText = inventoryData.length;
+            document.getElementById('statTotal').innerText = totalRotable;
             document.getElementById('statMasuk').innerText = totalMasuk;
             document.getElementById('statKeluar').innerText = totalKeluar;
 
@@ -382,40 +392,27 @@
             const unitModel = document.getElementById('itemUnitModel').value;
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
-            const date = getCurrentFormattedDate();
 
-            inventoryData.unshift({ name, desc, unitModel, status, type, date });
+            // Cari jika data identik sudah ada
+            const existingIndex = inventoryData.findIndex(item => 
+                (item.name || '').toLowerCase() === name.toLowerCase() &&
+                (item.desc || '').toLowerCase() === desc.toLowerCase() &&
+                (item.unitModel || '').toLowerCase() === unitModel.toLowerCase() &&
+                (item.status || '').toLowerCase() === status.toLowerCase() &&
+                (item.type || '').toLowerCase() === type.toLowerCase()
+            );
+
+            if (existingIndex !== -1) {
+                // Tambahkan QTY pada baris yang sudah ada
+                inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
+            } else {
+                // Buat baris baru dengan QTY 1
+                inventoryData.unshift({ name, desc, unitModel, status, type, qty: 1 });
+            }
 
             form.reset();
             renderTable();
         });
-
-        function mergeExistingDuplicates() {
-            const mergedMap = [];
-
-            inventoryData.forEach(item => {
-                const name = (item.name || '').toLowerCase();
-                const desc = (item.desc || '').toLowerCase();
-                const unitModel = item.unitModel || item.qty || '';
-                const status = item.status || '';
-                const type = item.type || '';
-
-                const key = `${name}|${desc}|${unitModel}|${status}|${type}`;
-                
-                const existing = mergedMap.find(m => m.key === key);
-                if (existing) {
-                    existing.data.date = getCurrentFormattedDate();
-                } else {
-                    mergedMap.push({
-                        key: key,
-                        data: { ...item }
-                    });
-                }
-            });
-
-            inventoryData = mergedMap.map(m => m.data);
-            renderTable();
-        }
 
         function deleteItem(index) {
             if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
