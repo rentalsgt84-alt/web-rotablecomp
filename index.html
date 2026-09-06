@@ -273,34 +273,36 @@
             inventoryData = [];
         }
 
-        // Fungsi pembersihan awal untuk mengonsolidasi data yang ada saat pertama dibuka
+        // Fungsi Konsolidasi Data Otomatis saat Pertama Memuat
         function autoConsolidateData() {
-            const grouped = {};
+            const netMap = {};
+
             inventoryData.forEach(item => {
                 const name = item.name || '';
                 const desc = item.desc || '';
-                const unitModel = item.unitModel || item.qty || '';
+                const unitModel = item.unitModel || '';
                 const status = item.status || '';
-                const type = item.type || '';
+                const type = item.type || 'Masuk';
                 const qtyVal = typeof item.qty === 'number' ? item.qty : 1;
 
-                const key = `${name.toLowerCase()}|${desc.toLowerCase()}|${unitModel.toLowerCase()}|${status.toLowerCase()}|${type.toLowerCase()}`;
+                const key = `${name.toLowerCase()}|${desc.toLowerCase()}|${unitModel.toLowerCase()}|${status.toLowerCase()}`;
                 
-                if (grouped[key]) {
-                    grouped[key].qty += qtyVal;
-                } else {
-                    grouped[key] = {
-                        name,
-                        desc,
-                        unitModel,
-                        status,
-                        type,
-                        qty: qtyVal
-                    };
+                if (!netMap[key]) {
+                    netMap[key] = { name, desc, unitModel, status, qty: 0 };
+                }
+
+                if (type === 'Masuk') {
+                    netMap[key].qty += qtyVal;
+                } else if (type === 'Keluar') {
+                    netMap[key].qty -= qtyVal;
                 }
             });
 
-            inventoryData = Object.values(grouped);
+            // Hanya simpan item yang memiliki QTY > 0
+            inventoryData = Object.values(netMap)
+                .filter(item => item.qty > 0)
+                .map(item => ({ ...item, type: 'Masuk' }));
+
             localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
         }
 
@@ -312,17 +314,12 @@
         function renderTable() {
             logTable.innerHTML = '';
             let totalMasuk = 0;
-            let totalKeluar = 0;
-            let totalRotable = 0;
             const currentRole = sessionStorage.getItem('userRole');
             
             const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
 
             inventoryData.forEach(item => {
-                const itemQty = item.qty || 1;
-                totalRotable += itemQty;
-                if (item.type === 'Masuk') totalMasuk += itemQty;
-                if (item.type === 'Keluar') totalKeluar += itemQty;
+                totalMasuk += (item.qty || 1);
             });
 
             const filteredData = inventoryData.filter(item => 
@@ -344,11 +341,8 @@
                 filteredData.forEach((item) => {
                     const originalIndex = inventoryData.indexOf(item);
 
-                    const isMasuk = item.type === 'Masuk';
-                    const badgeStyle = isMasuk 
-                        ? 'bg-emerald-200/90 text-emerald-950 border-emerald-400' 
-                        : 'bg-rose-200/90 text-rose-950 border-rose-400';
-                    const iconStyle = isMasuk ? 'fa-arrow-down' : 'fa-arrow-up';
+                    const badgeStyle = 'bg-emerald-200/90 text-emerald-950 border-emerald-400';
+                    const iconStyle = 'fa-arrow-down';
 
                     const actionTd = currentRole === 'admin' ? `
                         <td class="py-3 px-3 text-center">
@@ -368,7 +362,7 @@
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
                         <td class="py-3 px-3">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}">
-                                <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || '-'}
+                                <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || 'Masuk'}
                             </span>
                         </td>
                         ${actionTd}
@@ -377,9 +371,9 @@
                 });
             }
 
-            document.getElementById('statTotal').innerText = totalRotable;
+            document.getElementById('statTotal').innerText = totalMasuk;
             document.getElementById('statMasuk').innerText = totalMasuk;
-            document.getElementById('statKeluar').innerText = totalKeluar;
+            document.getElementById('statKeluar').innerText = 0;
 
             localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
         }
@@ -393,21 +387,35 @@
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
 
-            // Cari jika data identik sudah ada
+            // Cari index data Masuk yang identik
             const existingIndex = inventoryData.findIndex(item => 
                 (item.name || '').toLowerCase() === name.toLowerCase() &&
                 (item.desc || '').toLowerCase() === desc.toLowerCase() &&
                 (item.unitModel || '').toLowerCase() === unitModel.toLowerCase() &&
-                (item.status || '').toLowerCase() === status.toLowerCase() &&
-                (item.type || '').toLowerCase() === type.toLowerCase()
+                (item.status || '').toLowerCase() === status.toLowerCase()
             );
 
-            if (existingIndex !== -1) {
-                // Tambahkan QTY pada baris yang sudah ada
-                inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
-            } else {
-                // Buat baris baru dengan QTY 1
-                inventoryData.unshift({ name, desc, unitModel, status, type, qty: 1 });
+            if (type === 'Masuk') {
+                if (existingIndex !== -1) {
+                    // Tambah QTY jika data sudah ada
+                    inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
+                } else {
+                    // Buat data baru jika belum ada
+                    inventoryData.unshift({ name, desc, unitModel, status, type: 'Masuk', qty: 1 });
+                }
+            } else if (type === 'Keluar') {
+                if (existingIndex !== -1) {
+                    // Kurangi QTY data Masuk yang ada
+                    inventoryData[existingIndex].qty -= 1;
+
+                    // Hapus baris data jika QTY menjadi 0
+                    if (inventoryData[existingIndex].qty <= 0) {
+                        inventoryData.splice(existingIndex, 1);
+                    }
+                } else {
+                    alert('Data komponen tidak ditemukan di stok Masuk!');
+                    return;
+                }
             }
 
             form.reset();
