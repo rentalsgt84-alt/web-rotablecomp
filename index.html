@@ -126,7 +126,6 @@
                         <textarea id="itemDesc" rows="2" placeholder="Input Part Description" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium resize-none"></textarea>
                     </div>
 
-                    <!-- DROPDOWN UNIT MODEL -->
                     <div>
                         <label class="block text-xs font-bold text-slate-900 mb-1">Unit Model</label>
                         <select id="itemQty" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
@@ -162,13 +161,21 @@
 
             <!-- Tabel Riwayat -->
             <div id="tableSection" class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
-                <div class="flex items-center justify-between mb-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
                     <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
                         <i class="fa-solid fa-list-check text-blue-600"></i> Component History
                     </h2>
-                    <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
-                        <i class="fa-solid fa-compress"></i> Gabungkan Data Duplikat
-                    </button>
+                    
+                    <!-- FITUR PENCARIAN & TOMBOL ACTION -->
+                    <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Cari Part Description..." class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 placeholder-slate-500 font-medium shadow-sm">
+                        </div>
+                        <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
+                            <i class="fa-solid fa-compress"></i> Gabungkan Duplikat
+                        </button>
+                    </div>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -197,8 +204,8 @@
     <script>
         // ================= KONFIGURASI LOGIN & ROLE =================
         const ACCOUNTS = {
-            "admin": { password: "kanitra84", role: "admin" },
-            "viewer": { password: "sangatta123", role: "viewer" }
+            "admin": { password: "sangatta123", role: "admin" },
+            "viewer": { password: "viewersangatta", role: "viewer" }
         };
 
         const loginSection = document.getElementById('loginSection');
@@ -254,6 +261,7 @@
             if (ACCOUNTS[userInput] && ACCOUNTS[userInput].password === passInput) {
                 sessionStorage.setItem('userRole', ACCOUNTS[userInput].role);
                 loginError.classList.add('hidden');
+                loginForm.reset();
                 checkSession();
             } else {
                 loginError.classList.remove('hidden');
@@ -266,7 +274,12 @@
         }
 
         // ================= SISTEM PENCATATAN =================
-        let inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
+        let inventoryData = [];
+        try {
+            inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
+        } catch (e) {
+            inventoryData = [];
+        }
 
         const form = document.getElementById('itemForm');
         const logTable = document.getElementById('logTable');
@@ -282,18 +295,36 @@
             let totalMasuk = 0;
             let totalKeluar = 0;
             const currentRole = sessionStorage.getItem('userRole');
+            
+            // Ambil kata kunci pencarian
+            const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
 
-            if (inventoryData.length === 0) {
+            // Hitung statistik global dari seluruh data
+            inventoryData.forEach(item => {
+                if (item.type === 'Masuk') totalMasuk += 1;
+                if (item.type === 'Keluar') totalKeluar += 1;
+            });
+
+            // Filter data berdasarkan Part Description
+            const filteredData = inventoryData.filter(item => 
+                (item.desc || '').toLowerCase().includes(searchKeyword)
+            );
+
+            if (filteredData.length === 0) {
                 const colSpanCount = currentRole === 'admin' ? 7 : 6;
+                const emptyMessage = searchKeyword 
+                    ? `Tidak ditemukan deskripsi yang cocok dengan "${searchKeyword}".` 
+                    : 'Belum ada transaksi tercatat.';
+                
                 logTable.innerHTML = `
                     <tr>
-                        <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">Belum ada transaksi tercatat.</td>
+                        <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">${emptyMessage}</td>
                     </tr>
                 `;
             } else {
-                inventoryData.forEach((item, index) => {
-                    if (item.type === 'Masuk') totalMasuk += 1;
-                    if (item.type === 'Keluar') totalKeluar += 1;
+                filteredData.forEach((item) => {
+                    // Dapatkan indeks asli pada array inventoryData untuk aksi hapus
+                    const originalIndex = inventoryData.indexOf(item);
 
                     const isMasuk = item.type === 'Masuk';
                     const badgeStyle = isMasuk 
@@ -303,7 +334,7 @@
 
                     const actionTd = currentRole === 'admin' ? `
                         <td class="py-3 px-3 text-center">
-                            <button onclick="deleteItem(${index})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
+                            <button onclick="deleteItem(${originalIndex})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </td>
