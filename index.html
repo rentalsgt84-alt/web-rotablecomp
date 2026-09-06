@@ -88,7 +88,7 @@
             
             <div class="bg-white/30 backdrop-blur-md p-5 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE IN</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL COMPONENT IN</p>
                     <p id="statMasuk" class="text-2xl font-extrabold text-emerald-900">0</p>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-emerald-500/30 text-emerald-900 flex items-center justify-center text-lg font-bold">
@@ -98,7 +98,7 @@
 
             <div class="bg-white/30 backdrop-blur-md p-5 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
                 <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE OUT</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL COMPONENT OUT</p>
                     <p id="statKeluar" class="text-2xl font-extrabold text-rose-900">0</p>
                 </div>
                 <div class="w-10 h-10 rounded-lg bg-rose-500/30 text-rose-900 flex items-center justify-center text-lg font-bold">
@@ -147,15 +147,15 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Jenis Transaksi</label>
+                        <label class="block text-xs font-bold text-slate-900 mb-1">Component Type</label>
                         <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
-                            <option value="Masuk">Barang Masuk</option>
-                            <option value="Keluar">Barang Keluar</option>
+                            <option value="Masuk">Component In</option>
+                            <option value="Keluar">Component Out</option>
                         </select>
                     </div>
 
                     <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-md transition duration-150 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-check"></i> Simpan Transaksi
+                        <i class="fa-solid fa-check"></i> Save
                     </button>
                 </form>
             </div>
@@ -164,7 +164,7 @@
             <div id="tableSection" class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-blue-600"></i> Riwayat Transaksi
+                        <i class="fa-solid fa-list-check text-blue-600"></i> Component History
                     </h2>
                     <button id="btnMergeDuplicates" onclick="mergeExistingDuplicates()" class="text-xs bg-slate-800/80 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 shadow font-medium">
                         <i class="fa-solid fa-compress"></i> Gabungkan Data Duplikat
@@ -175,12 +175,12 @@
                     <table class="w-full text-left text-sm text-slate-900">
                         <thead class="bg-white/40 text-xs uppercase text-slate-900 border-b border-slate-300/60">
                             <tr>
-                                <th class="py-3 px-3 font-extrabold">Waktu</th>
+                                <th class="py-3 px-3 font-extrabold">Date</th>
                                 <th class="py-3 px-3 font-extrabold">Part Number</th>
-                                <th class="py-3 px-3 font-extrabold">Deskripsi</th>
+                                <th class="py-3 px-3 font-extrabold">Part Description</th>
                                 <th class="py-3 px-3 font-extrabold">Unit Model</th>
                                 <th class="py-3 px-3 font-extrabold">Status</th>
-                                <th class="py-3 px-3 font-extrabold">Jenis</th>
+                                <th class="py-3 px-3 font-extrabold">Type</th>
                                 <th id="thAction" class="py-3 px-3 font-extrabold text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -197,8 +197,8 @@
     <script>
         // ================= KONFIGURASI LOGIN & ROLE =================
         const ACCOUNTS = {
-            "admin": { password: "sangatta123", role: "admin" },
-            "viewer": { password: "viewersangatta", role: "viewer" }
+            "admin": { password: "kanitra84", role: "admin" },
+            "viewer": { password: "sangatta123", role: "viewer" }
         };
 
         const loginSection = document.getElementById('loginSection');
