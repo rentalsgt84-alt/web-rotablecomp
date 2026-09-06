@@ -126,11 +126,6 @@
                         <textarea id="itemDesc" rows="2" placeholder="Input Part Description" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium resize-none"></textarea>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Peruntukan / Lokasi</label>
-                        <input type="text" id="itemPurpose" placeholder="Contoh: Pit3, Workshop, dll." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium">
-                    </div>
-
                     <!-- DROPDOWN UNIT MODEL -->
                     <div>
                         <label class="block text-xs font-bold text-slate-900 mb-1">Unit Model</label>
@@ -183,10 +178,9 @@
                                 <th class="py-3 px-3 font-extrabold">Waktu</th>
                                 <th class="py-3 px-3 font-extrabold">Part Number</th>
                                 <th class="py-3 px-3 font-extrabold">Deskripsi</th>
-                                <th class="py-3 px-3 font-extrabold">Peruntukan</th>
+                                <th class="py-3 px-3 font-extrabold">Unit Model</th>
                                 <th class="py-3 px-3 font-extrabold">Status</th>
                                 <th class="py-3 px-3 font-extrabold">Jenis</th>
-                                <th class="py-3 px-3 font-extrabold">Unit Model</th>
                                 <th id="thAction" class="py-3 px-3 font-extrabold text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -290,7 +284,7 @@
             const currentRole = sessionStorage.getItem('userRole');
 
             if (inventoryData.length === 0) {
-                const colSpanCount = currentRole === 'admin' ? 8 : 7;
+                const colSpanCount = currentRole === 'admin' ? 7 : 6;
                 logTable.innerHTML = `
                     <tr>
                         <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">Belum ada transaksi tercatat.</td>
@@ -321,14 +315,13 @@
                         <td class="py-3 px-3 text-xs font-bold text-slate-900 whitespace-nowrap">${item.date || '-'}</td>
                         <td class="py-3 px-3 font-extrabold text-slate-900">${item.name || '-'}</td>
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.desc || '-'}</td>
-                        <td class="py-3 px-3 text-xs font-extrabold text-slate-900">${item.purpose || '-'}</td>
+                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.qty || '-'}</td>
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
                         <td class="py-3 px-3">
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}">
                                 <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || '-'}
                             </span>
                         </td>
-                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.qty || '-'}</td>
                         ${actionTd}
                     `;
                     logTable.appendChild(row);
@@ -347,16 +340,14 @@
             
             const name = document.getElementById('itemName').value.trim();
             const desc = document.getElementById('itemDesc').value.trim();
-            const purpose = document.getElementById('itemPurpose').value.trim();
             const selectedQty = document.getElementById('itemQty').value;
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
             const date = getCurrentFormattedDate();
 
             const existingIndex = inventoryData.findIndex(item => 
-                item.name.toLowerCase() === name.toLowerCase() &&
-                item.desc.toLowerCase() === desc.toLowerCase() &&
-                item.purpose.toLowerCase() === purpose.toLowerCase() &&
+                (item.name || '').toLowerCase() === name.toLowerCase() &&
+                (item.desc || '').toLowerCase() === desc.toLowerCase() &&
                 item.qty === selectedQty &&
                 item.status === status &&
                 item.type === type
@@ -367,7 +358,7 @@
                 const updatedItem = inventoryData.splice(existingIndex, 1)[0];
                 inventoryData.unshift(updatedItem);
             } else {
-                inventoryData.unshift({ name, desc, purpose, qty: selectedQty, status, type, date });
+                inventoryData.unshift({ name, desc, qty: selectedQty, status, type, date });
             }
 
             form.reset();
@@ -378,7 +369,13 @@
             const mergedMap = [];
 
             inventoryData.forEach(item => {
-                const key = `${item.name.toLowerCase()}|${item.desc.toLowerCase()}|${item.purpose.toLowerCase()}|${item.qty}|${item.status}|${item.type}`;
+                const name = (item.name || '').toLowerCase();
+                const desc = (item.desc || '').toLowerCase();
+                const qty = item.qty || '';
+                const status = item.status || '';
+                const type = item.type || '';
+
+                const key = `${name}|${desc}|${qty}|${status}|${type}`;
                 
                 const existing = mergedMap.find(m => m.key === key);
                 if (existing) {
