@@ -182,7 +182,6 @@
                                 <th class="py-3 px-3 font-extrabold text-center">QTY</th>
                                 <th class="py-3 px-3 font-extrabold">Unit Model</th>
                                 <th class="py-3 px-3 font-extrabold">Status</th>
-                                <th class="py-3 px-3 font-extrabold">Type</th>
                                 <th id="thAction" class="py-3 px-3 font-extrabold text-center">Action</th>
                             </tr>
                         </thead>
@@ -300,8 +299,7 @@
 
             // Hanya simpan item yang memiliki QTY > 0
             inventoryData = Object.values(netMap)
-                .filter(item => item.qty > 0)
-                .map(item => ({ ...item, type: 'Masuk' }));
+                .filter(item => item.qty > 0);
 
             localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
         }
@@ -327,7 +325,7 @@
             );
 
             if (filteredData.length === 0) {
-                const colSpanCount = currentRole === 'admin' ? 7 : 6;
+                const colSpanCount = currentRole === 'admin' ? 6 : 5;
                 const emptyMessage = searchKeyword 
                     ? `Tidak ditemukan deskripsi yang cocok dengan "${searchKeyword}".` 
                     : 'Belum ada transaksi tercatat.';
@@ -340,9 +338,6 @@
             } else {
                 filteredData.forEach((item) => {
                     const originalIndex = inventoryData.indexOf(item);
-
-                    const badgeStyle = 'bg-emerald-200/90 text-emerald-950 border-emerald-400';
-                    const iconStyle = 'fa-arrow-down';
 
                     const actionTd = currentRole === 'admin' ? `
                         <td class="py-3 px-3 text-center">
@@ -360,11 +355,6 @@
                         <td class="py-3 px-3 font-extrabold text-center text-slate-900">${item.qty || 1}</td>
                         <td class="py-3 px-3 font-extrabold text-slate-900">${item.unitModel || '-'}</td>
                         <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
-                        <td class="py-3 px-3">
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}">
-                                <i class="fa-solid ${iconStyle} text-[10px]"></i> ${item.type || 'Masuk'}
-                            </span>
-                        </td>
                         ${actionTd}
                     `;
                     logTable.appendChild(row);
@@ -387,7 +377,7 @@
             const status = document.getElementById('itemStatus').value;
             const type = document.getElementById('itemType').value;
 
-            // Cari index data Masuk yang identik
+            // Cari index data yang identik
             const existingIndex = inventoryData.findIndex(item => 
                 (item.name || '').toLowerCase() === name.toLowerCase() &&
                 (item.desc || '').toLowerCase() === desc.toLowerCase() &&
@@ -401,11 +391,11 @@
                     inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
                 } else {
                     // Buat data baru jika belum ada
-                    inventoryData.unshift({ name, desc, unitModel, status, type: 'Masuk', qty: 1 });
+                    inventoryData.unshift({ name, desc, unitModel, status, qty: 1 });
                 }
             } else if (type === 'Keluar') {
                 if (existingIndex !== -1) {
-                    // Kurangi QTY data Masuk yang ada
+                    // Kurangi QTY data yang ada
                     inventoryData[existingIndex].qty -= 1;
 
                     // Hapus baris data jika QTY menjadi 0
@@ -413,7 +403,7 @@
                         inventoryData.splice(existingIndex, 1);
                     }
                 } else {
-                    alert('Data komponen tidak ditemukan di stok Masuk!');
+                    alert('Data komponen tidak ditemukan di stok!');
                     return;
                 }
             }
