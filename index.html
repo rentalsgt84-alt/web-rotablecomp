@@ -1,425 +1,272 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotable Component Rental Sangatta</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-slate-900 text-slate-800 font-sans antialiased p-4 md:p-8 min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative" style="background-image: url('bg.jpg');">
-
-    <!-- Lapisan Gelap Background -->
-    <div class="fixed inset-0 bg-black/30 -z-10"></div>
-
-    <!-- ================= MODAL LOGIN ================= -->
-    <div id="loginSection" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-2xl border border-white/50 w-full max-w-md">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden mx-auto shadow-sm mb-3">
-                    <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=LOGO';">
-                </div>
-                <h2 class="text-xl font-bold text-slate-900">Masuk ke Sistem</h2>
-                <p class="text-xs text-slate-600 mt-1">Rotable Component Rental Sangatta</p>
-            </div>
-
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Username</label>
-                    <input type="text" id="loginUsername" placeholder="Masukkan username" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-                    <input type="password" id="loginPassword" placeholder="Masukkan password" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-                </div>
-                <p id="loginError" class="text-xs text-rose-600 font-semibold hidden text-center">Username atau password salah!</p>
-                <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-sm transition duration-150 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login
-                </button>
-            </form>
-            
-            <div class="mt-6 pt-4 border-t border-slate-200/80 text-[11px] text-slate-500 space-y-1">
-                <p class="font-bold text-slate-700">Petunjuk Akun Login:</p>
-                <p>• Admin (Full Edit & Input): <span class="font-mono text-slate-800">admin / sangatta123</span></p>
-                <p>• Viewer (Hanya Lihat): <span class="font-mono text-slate-800">viewer / viewersangatta</span></p>
-            </div>
+<!-- ================= MODAL EDIT (BARU) ================= -->
+<div id="editModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-white/50 w-full max-w-md">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-blue-600"></i> Edit Komponen
+            </h3>
+            <button onclick="closeEditModal()" class="text-slate-500 hover:text-slate-800">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
         </div>
-    </div>
 
-    <!-- ================= KONTEN UTAMA WEB ================= -->
-    <div id="mainContent" class="max-w-7xl mx-auto space-y-6 hidden">
-        
-        <!-- Header -->
-        <header class="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-lg bg-white/90 border border-slate-200 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
-                    <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1" onerror="this.onerror=null; this.src='https://via.placeholder.com/60?text=LOGO';">
-                </div>
-                <div>
-                    <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">Rotable Component Rental Sangatta</h1>
-                    <p class="text-sm text-slate-800 font-semibold">Monitoring & Tracking Rotable Component Rental Sangatta</p>
-                </div>
+        <form id="editForm" class="space-y-4">
+            <input type="hidden" id="editIndex">
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Part Number</label>
+                <input type="text" id="editPartName" disabled class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-slate-100 font-medium text-slate-500">
             </div>
-            
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden sm:block">
-                    <p id="userRoleBadge" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-800 text-white inline-block shadow-sm">Role</p>
-                </div>
-                <button onclick="logout()" class="text-xs bg-rose-600/90 hover:bg-rose-700 text-white px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-md font-semibold">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Quantity (QTY)</label>
+                <input type="number" id="editQty" min="1" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white font-bold">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Component Status</label>
+                <select id="editStatus" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white font-semibold">
+                    <option value="Ready For Use">Ready For Use (RFU)</option>
+                    <option value="Damage Core">Damage Core (DCR)</option>
+                    <option value="Under Repair">Under Repair (WIP)</option>
+                    <option value="In Use">In Use</option>
+                    <option value="Scrap / Discarded">Scrap / Discarded</option>
+                </select>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-2">
+                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs rounded-lg transition-colors">
+                    Batal
+                </button>
+                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg transition-colors shadow-md">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
                 </button>
             </div>
-        </header>
-
-        <!-- Kartu Statistik -->
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white/30 backdrop-blur-md p-5 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL ROTABLE</p>
-                    <p id="statTotal" class="text-2xl font-extrabold text-slate-900">0</p>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-blue-500/30 text-blue-900 flex items-center justify-center text-lg font-bold">
-                    <i class="fa-solid fa-receipt"></i>
-                </div>
-            </div>
-            
-            <div class="bg-white/30 backdrop-blur-md p-5 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL COMPONENT IN</p>
-                    <p id="statMasuk" class="text-2xl font-extrabold text-emerald-900">0</p>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-emerald-500/30 text-emerald-900 flex items-center justify-center text-lg font-bold">
-                    <i class="fa-solid fa-arrow-down-long"></i>
-                </div>
-            </div>
-
-            <div class="bg-white/30 backdrop-blur-md p-5 rounded-xl shadow-xl border border-white/40 flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-800 mb-1">TOTAL COMPONENT OUT</p>
-                    <p id="statKeluar" class="text-2xl font-extrabold text-rose-900">0</p>
-                </div>
-                <div class="w-10 h-10 rounded-lg bg-rose-500/30 text-rose-900 flex items-center justify-center text-lg font-bold">
-                    <i class="fa-solid fa-arrow-up-long"></i>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Content -->
-        <main id="mainGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            <!-- Form Input -->
-            <div id="formSection" class="bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40 h-fit">
-                <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-square-plus text-blue-600"></i> Entry Form
-                </h2>
-                <form id="itemForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Part Number</label>
-                        <input type="text" id="itemName" placeholder="Input Part Number" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Part Description</label>
-                        <textarea id="itemDesc" rows="2" placeholder="Input Part Description" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 placeholder-slate-600 font-medium resize-none"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Unit Model</label>
-                        <select id="itemUnitModel" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
-                            <option value="HD785-7">HD785-7</option>
-                            <option value="HD1500-8">HD1500-8</option>
-                            <option value="D375A-6R">D375A-6R</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Component Status</label>
-                        <select id="itemStatus" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
-                            <option value="Ready For Use">RFU</option>
-                            <option value="Damage Core">DCR</option>
-                            <option value="Under Repair">WIP</option>
-                            <option value="Scrap / Discarded">Scrap</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-900 mb-1">Component Type</label>
-                        <select id="itemType" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 font-medium">
-                            <option value="Masuk">Component In</option>
-                            <option value="Keluar">Component Out</option>
-                        </select>
-                    </div>
-
-                    <button type="submit" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-md transition duration-150 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-check"></i> Save
-                    </button>
-                </form>
-            </div>
-
-            <!-- Tabel Riwayat -->
-            <div id="tableSection" class="lg:col-span-2 bg-white/30 backdrop-blur-md p-6 rounded-xl shadow-xl border border-white/40">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-                    <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-list-check text-blue-600"></i> Component History
-                    </h2>
-                    
-                    <div class="flex items-center gap-2 w-full sm:w-auto">
-                        <div class="relative flex-1 sm:w-64">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                            <input type="text" id="searchInput" onkeyup="renderTable()" placeholder="Cari Part Description..." class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/80 placeholder-slate-500 font-medium shadow-sm">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-slate-900">
-                        <thead class="bg-white/40 text-xs uppercase text-slate-900 border-b border-slate-300/60">
-                            <tr>
-                                <th class="py-3 px-3 font-extrabold">Part Number</th>
-                                <th class="py-3 px-3 font-extrabold">Part Description</th>
-                                <th class="py-3 px-3 font-extrabold text-center">QTY</th>
-                                <th class="py-3 px-3 font-extrabold">Unit Model</th>
-                                <th class="py-3 px-3 font-extrabold">Status</th>
-                                <th id="thAction" class="py-3 px-3 font-extrabold text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logTable" class="divide-y divide-slate-300/50">
-                            <!-- Data dimasukkan via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-        </main>
+        </form>
     </div>
+</div>
 
-    <script>
-        // ================= KONFIGURASI LOGIN & ROLE =================
-        const ACCOUNTS = {
-            "admin": { password: "sangatta123", role: "admin" },
-            "viewer": { password: "viewersangatta", role: "viewer" }
-        };
+<script>
+    // ================= KONFIGURASI LOGIN & ROLE =================
+    const ACCOUNTS = {
+        "admin": { password: "sangatta123", role: "admin" },
+        "viewer": { password: "viewersangatta", role: "viewer" }
+    };
 
-        const loginSection = document.getElementById('loginSection');
-        const mainContent = document.getElementById('mainContent');
-        const loginForm = document.getElementById('loginForm');
-        const loginError = document.getElementById('loginError');
-        
-        const formSection = document.getElementById('formSection');
-        const tableSection = document.getElementById('tableSection');
-        const thAction = document.getElementById('thAction');
-        const userRoleBadge = document.getElementById('userRoleBadge');
+    const loginSection = document.getElementById('loginSection');
+    const mainContent = document.getElementById('mainContent');
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
 
-        function checkSession() {
-            const currentRole = sessionStorage.getItem('userRole');
-            
-            if (currentRole) {
-                loginSection.classList.add('hidden');
-                mainContent.classList.remove('hidden');
+    const formSection = document.getElementById('formSection');
+    const tableSection = document.getElementById('tableSection');
+    const thAction = document.getElementById('thAction');
+    const userRoleBadge = document.getElementById('userRoleBadge');
 
-                if (currentRole === 'admin') {
-                    formSection.classList.remove('hidden');
-                    thAction.classList.remove('hidden');
-                    tableSection.classList.remove('lg:col-span-3');
-                    tableSection.classList.add('lg:col-span-2');
-                    
-                    userRoleBadge.innerText = 'Admin (Edit Mode)';
-                    userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-700 text-white inline-block shadow-sm';
-                } else if (currentRole === 'viewer') {
-                    formSection.classList.add('hidden');
-                    thAction.classList.add('hidden');
-                    tableSection.classList.remove('lg:col-span-2');
-                    tableSection.classList.add('lg:col-span-3');
-                    
-                    userRoleBadge.innerText = 'Viewer (Read-Only)';
-                    userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-600 text-white inline-block shadow-sm';
-                }
+    function checkSession() {
+        const currentRole = sessionStorage.getItem('userRole');
 
-                renderTable();
-            } else {
-                loginSection.classList.remove('hidden');
-                mainContent.classList.add('hidden');
-            }
-        }
+        if (currentRole) {
+            loginSection.classList.add('hidden');
+            mainContent.classList.remove('hidden');
 
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const userInput = document.getElementById('loginUsername').value.trim();
-            const passInput = document.getElementById('loginPassword').value.trim();
+            if (currentRole === 'admin') {
+                formSection.classList.remove('hidden');
+                thAction.classList.remove('hidden');
+                tableSection.classList.remove('lg:col-span-3');
+                tableSection.classList.add('lg:col-span-2');
 
-            if (ACCOUNTS[userInput] && ACCOUNTS[userInput].password === passInput) {
-                sessionStorage.setItem('userRole', ACCOUNTS[userInput].role);
-                loginError.classList.add('hidden');
-                loginForm.reset();
-                checkSession();
-            } else {
-                loginError.classList.remove('hidden');
-            }
-        });
+                userRoleBadge.innerText = 'Admin (Edit Mode)';
+                userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-700 text-white inline-block shadow-sm';
+            } else if (currentRole === 'viewer') {
+                formSection.classList.add('hidden');
+                thAction.classList.add('hidden');
+                tableSection.classList.remove('lg:col-span-2');
+                tableSection.classList.add('lg:col-span-3');
 
-        function logout() {
-            sessionStorage.removeItem('userRole');
-            checkSession();
-        }
-
-        // ================= SISTEM PENCATATAN =================
-        let inventoryData = [];
-        try {
-            inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
-        } catch (e) {
-            inventoryData = [];
-        }
-
-        // Fungsi Konsolidasi Data Otomatis saat Pertama Memuat
-        function autoConsolidateData() {
-            const netMap = {};
-
-            inventoryData.forEach(item => {
-                const name = item.name || '';
-                const desc = item.desc || '';
-                const unitModel = item.unitModel || '';
-                const status = item.status || '';
-                const type = item.type || 'Masuk';
-                const qtyVal = typeof item.qty === 'number' ? item.qty : 1;
-
-                const key = `${name.toLowerCase()}|${desc.toLowerCase()}|${unitModel.toLowerCase()}|${status.toLowerCase()}`;
-                
-                if (!netMap[key]) {
-                    netMap[key] = { name, desc, unitModel, status, qty: 0 };
-                }
-
-                if (type === 'Masuk') {
-                    netMap[key].qty += qtyVal;
-                } else if (type === 'Keluar') {
-                    netMap[key].qty -= qtyVal;
-                }
-            });
-
-            // Hanya simpan item yang memiliki QTY > 0
-            inventoryData = Object.values(netMap)
-                .filter(item => item.qty > 0);
-
-            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
-        }
-
-        autoConsolidateData();
-
-        const form = document.getElementById('itemForm');
-        const logTable = document.getElementById('logTable');
-
-        function renderTable() {
-            logTable.innerHTML = '';
-            let totalMasuk = 0;
-            const currentRole = sessionStorage.getItem('userRole');
-            
-            const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-
-            inventoryData.forEach(item => {
-                totalMasuk += (item.qty || 1);
-            });
-
-            const filteredData = inventoryData.filter(item => 
-                (item.desc || '').toLowerCase().includes(searchKeyword)
-            );
-
-            if (filteredData.length === 0) {
-                const colSpanCount = currentRole === 'admin' ? 6 : 5;
-                const emptyMessage = searchKeyword 
-                    ? `Tidak ditemukan deskripsi yang cocok dengan "${searchKeyword}".` 
-                    : 'Belum ada transaksi tercatat.';
-                
-                logTable.innerHTML = `
-                    <tr>
-                        <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">${emptyMessage}</td>
-                    </tr>
-                `;
-            } else {
-                filteredData.forEach((item) => {
-                    const originalIndex = inventoryData.indexOf(item);
-
-                    const actionTd = currentRole === 'admin' ? `
-                        <td class="py-3 px-3 text-center">
-                            <button onclick="deleteItem(${originalIndex})" class="text-slate-700 hover:text-rose-600 transition-colors p-1" title="Hapus Data">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
-                        </td>
-                    ` : '';
-
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-white/30 transition-colors';
-                    row.innerHTML = `
-                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.name || '-'}</td>
-                        <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.desc || '-'}</td>
-                        <td class="py-3 px-3 font-extrabold text-center text-slate-900">${item.qty || 1}</td>
-                        <td class="py-3 px-3 font-extrabold text-slate-900">${item.unitModel || '-'}</td>
-                        <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
-                        ${actionTd}
-                    `;
-                    logTable.appendChild(row);
-                });
+                userRoleBadge.innerText = 'Viewer (Read-Only)';
+                userRoleBadge.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber-600 text-white inline-block shadow-sm';
             }
 
-            document.getElementById('statTotal').innerText = totalMasuk;
-            document.getElementById('statMasuk').innerText = totalMasuk;
-            document.getElementById('statKeluar').innerText = 0;
-
-            localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('itemName').value.trim();
-            const desc = document.getElementById('itemDesc').value.trim();
-            const unitModel = document.getElementById('itemUnitModel').value;
-            const status = document.getElementById('itemStatus').value;
-            const type = document.getElementById('itemType').value;
-
-            // Cari index data yang identik
-            const existingIndex = inventoryData.findIndex(item => 
-                (item.name || '').toLowerCase() === name.toLowerCase() &&
-                (item.desc || '').toLowerCase() === desc.toLowerCase() &&
-                (item.unitModel || '').toLowerCase() === unitModel.toLowerCase() &&
-                (item.status || '').toLowerCase() === status.toLowerCase()
-            );
-
-            if (type === 'Masuk') {
-                if (existingIndex !== -1) {
-                    // Tambah QTY jika data sudah ada
-                    inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
-                } else {
-                    // Buat data baru jika belum ada
-                    inventoryData.unshift({ name, desc, unitModel, status, qty: 1 });
-                }
-            } else if (type === 'Keluar') {
-                if (existingIndex !== -1) {
-                    // Kurangi QTY data yang ada
-                    inventoryData[existingIndex].qty -= 1;
-
-                    // Hapus baris data jika QTY menjadi 0
-                    if (inventoryData[existingIndex].qty <= 0) {
-                        inventoryData.splice(existingIndex, 1);
-                    }
-                } else {
-                    alert('Data komponen tidak ditemukan di stok!');
-                    return;
-                }
-            }
-
-            form.reset();
             renderTable();
+        } else {
+            loginSection.classList.remove('hidden');
+            mainContent.classList.add('hidden');
+        }
+    }
+
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const userInput = document.getElementById('loginUsername').value.trim();
+        const passInput = document.getElementById('loginPassword').value.trim();
+
+        if (ACCOUNTS[userInput] && ACCOUNTS[userInput].password === passInput) {
+            sessionStorage.setItem('userRole', ACCOUNTS[userInput].role);
+            loginError.classList.add('hidden');
+            loginForm.reset();
+            checkSession();
+        } else {
+            loginError.classList.remove('hidden');
+        }
+    });
+
+    function logout() {
+        sessionStorage.removeItem('userRole');
+        checkSession();
+    }
+
+    // ================= SISTEM PENCATATAN DATA =================
+    let inventoryData = [];
+    try {
+        inventoryData = JSON.parse(localStorage.getItem('inventoryData')) || [];
+    } catch (e) {
+        inventoryData = [];
+    }
+
+    const form = document.getElementById('itemForm');
+    const logTable = document.getElementById('logTable');
+
+    function renderTable() {
+        logTable.innerHTML = '';
+        let totalMasuk = 0;
+        const currentRole = sessionStorage.getItem('userRole');
+        const searchKeyword = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+
+        inventoryData.forEach(item => {
+            totalMasuk += (item.qty || 1);
         });
 
-        function deleteItem(index) {
-            if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
-                inventoryData.splice(index, 1);
-                renderTable();
+        const filteredData = inventoryData.filter(item =>
+            (item.desc || '').toLowerCase().includes(searchKeyword) ||
+            (item.name || '').toLowerCase().includes(searchKeyword)
+        );
+
+        if (filteredData.length === 0) {
+            const colSpanCount = currentRole === 'admin' ? 6 : 5;
+            const emptyMessage = searchKeyword
+                ? `Tidak ditemukan data yang cocok dengan "${searchKeyword}".`
+                : 'Belum ada transaksi tercatat.';
+
+            logTable.innerHTML = `
+                <tr>
+                    <td colspan="${colSpanCount}" class="py-6 text-center text-slate-900 italic font-bold">${emptyMessage}</td>
+                </tr>
+            `;
+        } else {
+            filteredData.forEach((item) => {
+                const originalIndex = inventoryData.indexOf(item);
+
+                const actionTd = currentRole === 'admin' ? `
+                    <td class="py-3 px-3 text-center flex items-center justify-center gap-2">
+                        <button onclick="openEditModal(${originalIndex})" class="text-blue-600 hover:text-blue-800 transition-colors p-1" title="Edit QTY & Status">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteItem(${originalIndex})" class="text-rose-600 hover:text-rose-800 transition-colors p-1" title="Hapus Data">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                ` : '';
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-white/30 transition-colors';
+                row.innerHTML = `
+                    <td class="py-3 px-3 font-extrabold text-slate-900">${item.name || '-'}</td>
+                    <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.desc || '-'}</td>
+                    <td class="py-3 px-3 font-extrabold text-center text-slate-900">${item.qty || 1}</td>
+                    <td class="py-3 px-3 font-extrabold text-slate-900">${item.unitModel || '-'}</td>
+                    <td class="py-3 px-3 text-xs font-bold text-slate-900">${item.status || '-'}</td>
+                    ${actionTd}
+                `;
+                logTable.appendChild(row);
+            });
+        }
+
+        document.getElementById('statTotal').innerText = totalMasuk;
+        document.getElementById('statMasuk').innerText = totalMasuk;
+        document.getElementById('statKeluar').innerText = 0;
+
+        localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
+    }
+
+    // ================= FUNGSI EDIT DATA (BARU) =================
+    const editModal = document.getElementById('editModal');
+    const editForm = document.getElementById('editForm');
+
+    function openEditModal(index) {
+        const item = inventoryData[index];
+        if (!item) return;
+
+        document.getElementById('editIndex').value = index;
+        document.getElementById('editPartName').value = item.name || '-';
+        document.getElementById('editQty').value = item.qty || 1;
+        document.getElementById('editStatus').value = item.status || 'Ready For Use';
+
+        editModal.classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        editModal.classList.add('hidden');
+    }
+
+    editForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const index = document.getElementById('editIndex').value;
+        const newQty = parseInt(document.getElementById('editQty').value, 10);
+        const newStatus = document.getElementById('editStatus').value;
+
+        if (index !== "" && inventoryData[index]) {
+            inventoryData[index].qty = newQty;
+            inventoryData[index].status = newStatus;
+
+            closeEditModal();
+            renderTable();
+        }
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('itemName').value.trim();
+        const desc = document.getElementById('itemDesc').value.trim();
+        const unitModel = document.getElementById('itemUnitModel').value;
+        const status = document.getElementById('itemStatus').value;
+        const type = document.getElementById('itemType').value;
+
+        const existingIndex = inventoryData.findIndex(item =>
+            (item.name || '').toLowerCase() === name.toLowerCase() &&
+            (item.desc || '').toLowerCase() === desc.toLowerCase() &&
+            (item.unitModel || '').toLowerCase() === unitModel.toLowerCase() &&
+            (item.status || '').toLowerCase() === status.toLowerCase()
+        );
+
+        if (type === 'Masuk') {
+            if (existingIndex !== -1) {
+                inventoryData[existingIndex].qty = (inventoryData[existingIndex].qty || 1) + 1;
+            } else {
+                inventoryData.unshift({ name, desc, unitModel, status, qty: 1 });
+            }
+        } else if (type === 'Keluar') {
+            if (existingIndex !== -1) {
+                inventoryData[existingIndex].qty -= 1;
+                if (inventoryData[existingIndex].qty <= 0) {
+                    inventoryData.splice(existingIndex, 1);
+                }
+            } else {
+                alert('Data komponen tidak ditemukan di stok!');
+                return;
             }
         }
 
-        checkSession();
-    </script>
-</body>
-</html>
+        form.reset();
+        renderTable();
+    });
+
+    function deleteItem(index) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+            inventoryData.splice(index, 1);
+            renderTable();
+        }
+    }
+
+    checkSession();
+</script>
