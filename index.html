@@ -1,4 +1,4 @@
-<!-- ================= MODAL EDIT (BARU) ================= -->
+<!-- ================= MODAL EDIT (BARU & DISEMPURNAKAN) ================= -->
 <div id="editModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white/90 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-white/50 w-full max-w-md">
         <div class="flex items-center justify-between mb-4">
@@ -102,7 +102,7 @@
 
         if (ACCOUNTS[userInput] && ACCOUNTS[userInput].password === passInput) {
             sessionStorage.setItem('userRole', ACCOUNTS[userInput].role);
-            loginError.classList.add('hidden');
+            loginError.classList.et ? loginError.classList.add('hidden') : loginError.classList.add('hidden');
             loginForm.reset();
             checkSession();
         } else {
@@ -188,7 +188,7 @@
         localStorage.setItem('inventoryData', JSON.stringify(inventoryData));
     }
 
-    // ================= FUNGSI EDIT DATA (BARU) =================
+    // ================= FUNGSI EDIT DATA & INTERAKSI MODAL =================
     const editModal = document.getElementById('editModal');
     const editForm = document.getElementById('editForm');
 
@@ -208,11 +208,31 @@
         editModal.classList.add('hidden');
     }
 
+    // Tutup modal menggunakan tombol ESC pada keyboard
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeEditModal();
+        }
+    });
+
+    // Tutup modal saat area gelap di luar kotak modal diklik
+    editModal.addEventListener('click', function (e) {
+        if (e.target === editModal) {
+            closeEditModal();
+        }
+    });
+
     editForm.addEventListener('submit', function (e) {
         e.preventDefault();
         const index = document.getElementById('editIndex').value;
         const newQty = parseInt(document.getElementById('editQty').value, 10);
         const newStatus = document.getElementById('editStatus').value;
+
+        // Validasi keamanan input quantity
+        if (isNaN(newQty) || newQty < 1) {
+            alert('Quantity minimal adalah 1!');
+            return;
+        }
 
         if (index !== "" && inventoryData[index]) {
             inventoryData[index].qty = newQty;
