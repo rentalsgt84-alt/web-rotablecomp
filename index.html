@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rotable Component Rental Sangatta - Rotable Component</title>
+    <title>Rotable Component Rental Sangatta</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN untuk Ikon -->
@@ -72,29 +72,28 @@
             <!-- Kolom Form Input (Hanya Admin) -->
             <section id="formSection" class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl shadow-xl backdrop-blur-sm">
                 <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-3">
-                    <i class="fa-solid fa-square-plus text-blue-500"></i> Input Transaksi Komponen
+                    <i class="fa-solid fa-square-plus text-blue-500"></i> Component Input
                 </h3>
                 <form id="itemForm" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Part Number / Nama Komponen</label>
-                        <input type="text" id="itemName" required placeholder="Contoh: 785-33-12340" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Part Number</label>
+                        <input type="text" id="itemName" required placeholder="Ex: 785-33-12340" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Deskripsi Komponen</label>
-                        <input type="text" id="itemDesc" required placeholder="Contoh: Carrier Roller Assembly" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Part Description</label>
+                        <input type="text" id="itemDesc" required placeholder="Ex: CARRIER ROLLER" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Model Unit</label>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">EGI</label>
                         <select id="itemUnitModel" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
                             <option value="Komatsu HD1500-8">Komatsu HD1500-8</option>
-                            <option value="Komatsu HD785">Komatsu HD785</option>
-                            <option value="Caterpillar 785B">Caterpillar 785B</option>
-                            <option value="Caterpillar 785D">Caterpillar 785D</option>
+                            <option value="Komatsu HD785-7">Komatsu HD785-7</option>
+                            <option value="Komatsu D375A-6R">Komatsu D375A-6R</option>
                             <option value="General Utility">General Utility / Lainnya</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-300 mb-1">Status Komponen</label>
+                        <label class="block text-xs font-bold text-slate-300 mb-1">Component Status</label>
                         <select id="itemStatus" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
                             <option value="Ready For Use">Ready For Use (RFU)</option>
                             <option value="Damage Core">Damage Core (DCR)</option>
@@ -106,12 +105,12 @@
                     <div>
                         <label class="block text-xs font-bold text-slate-300 mb-1">Jenis Transaksi</label>
                         <select id="itemType" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
-                            <option value="Masuk">Masuk / Penambahan Stok (+)</option>
-                            <option value="Keluar">Keluar / Pengurangan Stok (-)</option>
+                            <option value="In">In / Stock In (+)</option>
+                            <option value="Out">In / Stock Out (-)</option>
                         </select>
                     </div>
                     <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors shadow-lg">
-                        <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Transaksi
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Save Transaction
                     </button>
                 </form>
             </section>
