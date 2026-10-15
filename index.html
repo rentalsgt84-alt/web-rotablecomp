@@ -54,7 +54,7 @@
                     <i class="fa-solid fa-truck-monster text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-bold text-white">Rotable Component</h1>
+                    <h1 class="text-sm font-bold text-white">RENTAL SANGATTA</h1>
                     <p class="text-[10px] text-slate-400">Rotable Component Tracking & Monitoring System</p>
                 </div>
             </div>
@@ -106,7 +106,7 @@
                         <label class="block text-xs font-bold text-slate-300 mb-1">Jenis Transaksi</label>
                         <select id="itemType" class="w-full px-3 py-2 text-sm bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
                             <option value="In">In / Stock In (+)</option>
-                            <option value="Out">In / Stock Out (-)</option>
+                            <option value="Out">Out / Stock Out (-)</option>
                         </select>
                     </div>
                     <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors shadow-lg">
@@ -120,15 +120,15 @@
                 <!-- Statistik Cards -->
                 <div class="grid grid-cols-3 gap-4">
                     <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl shadow-md">
-                        <p class="text-[10px] uppercase font-bold text-slate-400">Total Stok</p>
+                        <p class="text-[10px] uppercase font-bold text-slate-400">Total Stock</p>
                         <h4 id="statTotal" class="text-2xl font-black text-white mt-1">0</h4>
                     </div>
                     <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl shadow-md">
-                        <p class="text-[10px] uppercase font-bold text-emerald-400">Masuk Tercatat</p>
+                        <p class="text-[10px] uppercase font-bold text-emerald-400">Stock In</p>
                         <h4 id="statMasuk" class="text-2xl font-black text-emerald-400 mt-1">0</h4>
                     </div>
                     <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl shadow-md">
-                        <p class="text-[10px] uppercase font-bold text-rose-400">Keluar Tercatat</p>
+                        <p class="text-[10px] uppercase font-bold text-rose-400">Stock Out</p>
                         <h4 id="statKeluar" class="text-2xl font-black text-rose-400 mt-1">0</h4>
                     </div>
                 </div>
@@ -137,10 +137,10 @@
                 <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm">
                     <div class="p-4 border-b border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3">
                         <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-table-list text-blue-500"></i> Daftar Stok Komponen
+                            <i class="fa-solid fa-table-list text-blue-500"></i> Component Stock List
                         </h3>
                         <div class="w-full sm:w-auto">
-                            <input type="text" id="searchInput" oninput="renderTable()" placeholder="Cari Part Number / Deskripsi..." class="w-full sm:w-64 px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <input type="text" id="searchInput" oninput="renderTable()" placeholder="Search Part Number / Part Description..." class="w-full sm:w-64 px-3 py-1.5 text-xs bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     </div>
                     <div class="overflow-x-auto">
@@ -148,11 +148,11 @@
                             <thead>
                                 <tr class="bg-slate-900/80 text-slate-400 uppercase tracking-wider text-[10px] border-b border-slate-700">
                                     <th class="py-3 px-3">Part Number</th>
-                                    <th class="py-3 px-3">Deskripsi</th>
+                                    <th class="py-3 px-3">Part Description</th>
                                     <th class="py-3 px-3 text-center">QTY</th>
-                                    <th class="py-3 px-3">Unit Model</th>
+                                    <th class="py-3 px-3">EGI</th>
                                     <th class="py-3 px-3">Status</th>
-                                    <th id="thAction" class="py-3 px-3 text-center">Aksi</th>
+                                    <th id="thAction" class="py-3 px-3 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="logTable" class="divide-y divide-slate-700/50 text-slate-200">
